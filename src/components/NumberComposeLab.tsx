@@ -83,6 +83,7 @@ function Counter({
   label,
   delayMs = 0,
   pop = true,
+  opacity = 1,
 }: {
   x: number
   y: number
@@ -91,11 +92,12 @@ function Counter({
   label?: string
   delayMs?: number
   pop?: boolean
+  opacity?: number
 }) {
   return (
     <g
       className={pop ? 'counter-pop' : undefined}
-      style={pop ? { animationDelay: `${delayMs}ms` } : undefined}
+      style={pop ? { animationDelay: `${delayMs}ms`, opacity } : { opacity }}
     >
       <circle cx={x} cy={y} r={r} fill={color} className="counter-dot" />
       {label != null && (
@@ -122,6 +124,10 @@ export function NumberComposeLab({
   const [flying, setFlying] = useState(false)
   const [entered, setEntered] = useState(false)
   const rafRef = useRef(0)
+
+  const addTotal = partA + partB
+  const subRemain = Math.max(0, total - partB)
+  const tensN = countTo
 
   const homePts = useMemo(
     () => gridPositions(total, { x: 40, y: 70, w: 300, h: 160 }),
@@ -150,6 +156,24 @@ export function NumberComposeLab({
   const pairs = useMemo(
     () => pairPositions(countTo, { x: 190, y: 130 }),
     [countTo],
+  )
+  const addA = useMemo(
+    () => gridPositions(partA, { x: 20, y: 90, w: 150, h: 140 }),
+    [partA],
+  )
+  const addB = useMemo(
+    () => gridPositions(partB, { x: 210, y: 90, w: 150, h: 140 }),
+    [partB],
+  )
+  const subPts = useMemo(
+    () => gridPositions(total, { x: 50, y: 70, w: 280, h: 150 }),
+    [total],
+  )
+  const tensCount = Math.floor(tensN / 10)
+  const onesCount = tensN % 10
+  const onesPts = useMemo(
+    () => gridPositions(onesCount, { x: 250, y: 80, w: 100, h: 160 }),
+    [onesCount],
   )
 
   useEffect(() => {
@@ -208,6 +232,9 @@ export function NumberComposeLab({
   const isOddEven = mode === 'oddEven'
   const isSplit =
     mode === 'challenge' || mode === 'landed' || mode === 'generalize'
+  const isAdd = mode === 'add'
+  const isSub = mode === 'sub'
+  const isTens = mode === 'tens'
   const splitDone = splitT > 0.98
 
   const replaySplit = () => {
@@ -463,6 +490,84 @@ export function NumberComposeLab({
             )}
           </g>
         )}
+        {isAdd && (
+          <g>
+            <rect className="group-frame a" x={24} y={56} width={150} height={180} rx={14} />
+            <rect className="group-frame b" x={206} y={56} width={150} height={180} rx={14} />
+            {addA.map((p, i) => (
+              <Counter key={`aa${i}`} x={p.x} y={p.y} color={COLORS.a} delayMs={i * 50} />
+            ))}
+            {addB.map((p, i) => (
+              <Counter key={`ab${i}`} x={p.x} y={p.y} color={COLORS.b} delayMs={80 + i * 50} />
+            ))}
+            {showAnswer && (
+              <>
+                <text x={99} y={48} textAnchor="middle" className="group-label a answer-pop">
+                  {partA}
+                </text>
+                <text x={281} y={48} textAnchor="middle" className="group-label b answer-pop">
+                  {partB}
+                </text>
+              </>
+            )}
+          </g>
+        )}
+
+        {isSub && (
+          <g>
+            {subPts.map((p, i) => {
+              const gone = showAnswer && i >= subRemain
+              return (
+                <Counter
+                  key={i}
+                  x={p.x}
+                  y={p.y}
+                  color={gone ? '#556' : COLORS.solo}
+                  delayMs={i * 45}
+                  opacity={gone ? 0.25 : 1}
+                />
+              )
+            })}
+            {showAnswer && (
+              <text x={190} y={292} textAnchor="middle" className="big-num answer-pop">
+                {subRemain}
+              </text>
+            )}
+          </g>
+        )}
+
+        {isTens && (
+          <g>
+            {Array.from({ length: tensCount }).map((_, i) => (
+              <rect
+                key={`t${i}`}
+                className="counter-pop"
+                style={{ animationDelay: `${i * 60}ms` }}
+                x={36 + (i % 5) * 38}
+                y={70 + Math.floor(i / 5) * 100}
+                width={28}
+                height={88}
+                rx={8}
+                fill={COLORS.a}
+              />
+            ))}
+            {onesPts.map((p, i) => (
+              <Counter
+                key={`o${i}`}
+                x={p.x}
+                y={p.y}
+                color={COLORS.b}
+                r={11}
+                delayMs={tensCount * 40 + i * 40}
+              />
+            ))}
+            {showAnswer && (
+              <text x={190} y={292} textAnchor="middle" className="big-num sm answer-pop">
+                {tensCount} {t.tensLabel} + {onesCount} {t.onesLabel}
+              </text>
+            )}
+          </g>
+        )}
       </svg>
 
       {isSplit && showAnswer && (
@@ -485,6 +590,26 @@ export function NumberComposeLab({
             {t.watchAgain}
           </button>
         </>
+      )}
+
+      {isAdd && showAnswer && (
+        <p className="number-eq show answer-pop">
+          <span className="a">{partA}</span>
+          <span className="op">+</span>
+          <span className="b">{partB}</span>
+          <span className="op">=</span>
+          <span className="sum">{addTotal}</span>
+        </p>
+      )}
+
+      {isSub && showAnswer && (
+        <p className="number-eq show answer-pop">
+          <span className="sum">{total}</span>
+          <span className="op">−</span>
+          <span className="b">{partB}</span>
+          <span className="op">=</span>
+          <span className="a">{subRemain}</span>
+        </p>
       )}
     </div>
   )

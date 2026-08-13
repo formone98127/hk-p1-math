@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { nextLessonId } from '../data/p1Catalog'
-import type { Lesson, NumberLabProps } from '../data/types'
+import type { Lesson, NumberLabProps, WorldLabProps } from '../data/types'
 import { useI18n } from '../i18n/I18nProvider'
 import { LangSwitch } from './LangSwitch'
 import { NumberComposeLab } from './NumberComposeLab'
+import { WorldLab } from './WorldLab'
 
 type Props = { lesson: Lesson }
 
@@ -81,6 +82,7 @@ export function LessonPlayer({ lesson }: Props) {
 
   const vizType = beat?.viz?.type ?? 'none'
   const labProps = (beat?.viz?.props ?? { mode: 'ask' }) as NumberLabProps
+  const worldProps = (beat?.viz?.props ?? { mode: 'length' }) as WorldLabProps
 
   const onLabInteract = () => {
     setGateOk(true)
@@ -161,7 +163,6 @@ export function LessonPlayer({ lesson }: Props) {
           beat && (
             <div className="beat-stage">
               {beat.prompt && <p className="prompt">{beat.prompt}</p>}
-              {/* Remount each beat so every example re-plays for kids */}
               <div className="viz-plane" key={beat.id}>
                 {vizType === 'numberLab' && (
                   <NumberComposeLab
@@ -169,6 +170,7 @@ export function LessonPlayer({ lesson }: Props) {
                     onInteractComplete={onLabInteract}
                   />
                 )}
+                {vizType === 'worldLab' && <WorldLab {...worldProps} />}
               </div>
               <div className={`caption-chip ${gated ? 'pulse' : ''}`}>
                 {gated ? t.gateChip : beat.caption}

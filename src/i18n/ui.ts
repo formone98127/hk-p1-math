@@ -30,17 +30,21 @@ type UiDict = {
   sameLabel: string
   evenLabel: string
   oddLabel: string
+  longerLabel: string
+  shorterLabel: string
+  tensLabel: string
+  onesLabel: string
 }
 
 export const ui: Record<Locale, UiDict> = {
   en: {
     brand: 'HK Primary 1 Maths',
-    headline: 'You can see the numbers!',
-    lede: 'Ten tiny steps. One new idea each time. You can do it!',
+    headline: 'You can see the maths!',
+    lede: 'All of Primary 1. Tiny steps. Five examples each. You can do it!',
     heroCta: 'Start Step 1 →',
     seriesTitle: 'Numbers to 20 — 10 steps',
     seriesBlurb: 'Short lessons. Finish one step, then the next!',
-    strandNumber: 'More number games (soon)',
+    strandNumber: 'Number',
     strandMeasures: 'Measures',
     strandShape: 'Shape & space',
     strandInquiry: 'Inquiry',
@@ -63,15 +67,19 @@ export const ui: Record<Locale, UiDict> = {
     sameLabel: 'same',
     evenLabel: 'Even! All in pairs ✨',
     oddLabel: 'Odd! One left alone ✨',
+    longerLabel: 'longer',
+    shorterLabel: 'shorter',
+    tensLabel: 'tens',
+    onesLabel: 'ones',
   },
   'zh-Hant': {
     brand: '香港小一數學',
-    headline: '數目看得見！',
-    lede: '十個小小步驟。一次學一個。你做得到！',
+    headline: '數學看得見！',
+    lede: '小一全部單元。小小步驟。每步五題。你做得到！',
     heroCta: '開始第 1 步 →',
     seriesTitle: '20以內的數 — 10 步',
     seriesBlurb: '短短的一小課。完成一步，再玩下一步！',
-    strandNumber: '更多數目遊戲（即將推出）',
+    strandNumber: '數',
     strandMeasures: '度量',
     strandShape: '圖形與空間',
     strandInquiry: '探究',
@@ -94,5 +102,9 @@ export const ui: Record<Locale, UiDict> = {
     sameLabel: '一樣多',
     evenLabel: '雙數！剛剛好一對對 ✨',
     oddLabel: '單數！剩下一個 ✨',
+    longerLabel: '較長',
+    shorterLabel: '較短',
+    tensLabel: '個十',
+    onesLabel: '個一',
   },
 }

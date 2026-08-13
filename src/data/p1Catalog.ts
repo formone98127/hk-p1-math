@@ -1,9 +1,23 @@
 import type { Lesson, P1Unit } from './types'
 import { numbersTo20Lessons } from './numbersTo20'
+import { restOfP1Lessons } from './restOfP1'
 
 export const heroLessonId = '1n1-count-small'
 
-export type SeriesKind = 'count' | 'compare' | 'pairs' | 'split'
+export type SeriesKind =
+  | 'count'
+  | 'compare'
+  | 'pairs'
+  | 'split'
+  | 'add'
+  | 'sub'
+  | 'tens'
+  | 'length'
+  | 'money'
+  | 'clock'
+  | 'shape'
+  | 'space'
+  | 'inquiry'
 
 export type SeriesPart = {
   id: string
@@ -13,6 +27,15 @@ export type SeriesPart = {
   title: string
   blurb: string
   lessonId: string
+}
+
+export type UnitSeries = {
+  unitId: string
+  code: string
+  title: string
+  blurb: string
+  strand: P1Unit['strand']
+  parts: SeriesPart[]
 }
 
 /** 1N1 as 10 tiny steps for ~age 6. */
@@ -109,108 +132,173 @@ export const n1Series: SeriesPart[] = [
   },
 ]
 
-export const p1Units: P1Unit[] = [
+export const allUnitSeries: UnitSeries[] = [
   {
-    id: '1n2',
+    unitId: '1n1',
+    code: '1N1',
+    title: 'Numbers to 20',
+    blurb: 'Ten tiny steps. Five examples each!',
+    strand: 'number',
+    parts: n1Series,
+  },
+  {
+    unitId: '1n2',
     code: '1N2',
     title: 'Basic addition and subtraction',
+    blurb: 'Merge, take away, zero, and how +/− link.',
     strand: 'number',
-    blurb: 'Merge, take away, and see how + and − fit together.',
-    playable: false,
+    parts: [
+      { id: '1n2-p1', code: 'Step 1', part: 1, kind: 'add', title: 'Put together', blurb: 'Merge two groups!', lessonId: '1n2-add' },
+      { id: '1n2-p2', code: 'Step 2', part: 2, kind: 'sub', title: 'Take away', blurb: 'Some leave!', lessonId: '1n2-sub' },
+      { id: '1n2-p3', code: 'Step 3', part: 3, kind: 'sub', title: 'Zero', blurb: 'Take all away!', lessonId: '1n2-zero' },
+      { id: '1n2-p4', code: 'Step 4', part: 4, kind: 'add', title: 'Same sum both ways', blurb: 'Swap — same total!', lessonId: '1n2-commute' },
+      { id: '1n2-p5', code: 'Step 5', part: 5, kind: 'add', title: 'Add & take away link', blurb: '+ and − are friends!', lessonId: '1n2-link' },
+    ],
   },
   {
-    id: '1n3',
+    unitId: '1n3',
     code: '1N3',
     title: 'Numbers to 100',
+    blurb: 'Tens, ones, compare, skip count, estimate.',
     strand: 'number',
-    blurb: 'Build tens and ones up to 100.',
-    playable: false,
+    parts: [
+      { id: '1n3-p1', code: 'Step 1', part: 1, kind: 'tens', title: 'Tens and ones', blurb: 'Bundles + leftovers!', lessonId: '1n3-tens' },
+      { id: '1n3-p2', code: 'Step 2', part: 2, kind: 'compare', title: 'Bigger numbers', blurb: 'Which is more?', lessonId: '1n3-compare' },
+      { id: '1n3-p3', code: 'Step 3', part: 3, kind: 'count', title: 'Count in jumps', blurb: 'Jump by 2s!', lessonId: '1n3-skip' },
+      { id: '1n3-p4', code: 'Step 4', part: 4, kind: 'pairs', title: 'Odd or even', blurb: 'Check the ones!', lessonId: '1n3-oddeven' },
+      { id: '1n3-p5', code: 'Step 5', part: 5, kind: 'count', title: 'About how many?', blurb: 'Guess, then count!', lessonId: '1n3-estimate' },
+    ],
   },
   {
-    id: '1n4',
+    unitId: '1n4',
     code: '1N4',
     title: 'Addition and subtraction (I)',
+    blurb: 'Bigger +/−, three addends, check with +.',
     strand: 'number',
-    blurb: 'Written +/− with carrying and borrowing foundations.',
-    playable: false,
+    parts: [
+      { id: '1n4-p1', code: 'Step 1', part: 1, kind: 'add', title: 'Add two numbers', blurb: 'Bigger puts-together!', lessonId: '1n4-add2' },
+      { id: '1n4-p2', code: 'Step 2', part: 2, kind: 'add', title: 'Add three numbers', blurb: 'Left to right!', lessonId: '1n4-add3' },
+      { id: '1n4-p3', code: 'Step 3', part: 3, kind: 'sub', title: 'Subtract two numbers', blurb: 'Bigger take-aways!', lessonId: '1n4-sub2' },
+      { id: '1n4-p4', code: 'Step 4', part: 4, kind: 'add', title: 'Check with addition', blurb: 'Add back to check!', lessonId: '1n4-check' },
+      { id: '1n4-p5', code: 'Step 5', part: 5, kind: 'tens', title: 'Tens help adding', blurb: 'See the tens!', lessonId: '1n4-place' },
+    ],
   },
   {
-    id: '1m1',
+    unitId: '1m1',
     code: '1M1',
     title: 'Length and distance (I)',
+    blurb: 'Longer, shorter, same.',
     strand: 'measures',
-    blurb: 'Compare longer and shorter with everyday objects.',
-    playable: false,
+    parts: [
+      { id: '1m1-p1', code: 'Step 1', part: 1, kind: 'length', title: 'Longer or shorter?', blurb: 'Compare two sticks!', lessonId: '1m1-longer' },
+    ],
   },
   {
-    id: '1m2',
+    unitId: '1m2',
     code: '1M2',
     title: 'Money (I)',
+    blurb: 'Coin values and totals.',
     strand: 'measures',
-    blurb: 'Recognise coins and notes used every day.',
-    playable: false,
+    parts: [
+      { id: '1m2-p1', code: 'Step 1', part: 1, kind: 'money', title: 'Coin values', blurb: 'Add the coins!', lessonId: '1m2-coins' },
+      { id: '1m2-p2', code: 'Step 2', part: 2, kind: 'money', title: 'More coins', blurb: 'Bigger piles!', lessonId: '1m2-more' },
+    ],
   },
   {
-    id: '1m3',
+    unitId: '1m3',
     code: '1M3',
     title: 'Length and distance (II)',
+    blurb: 'Farther and nearer with bars.',
     strand: 'measures',
-    blurb: 'Measure with non-standard and early standard units.',
-    playable: false,
+    parts: [
+      { id: '1m3-p1', code: 'Step 1', part: 1, kind: 'length', title: 'Farther / nearer', blurb: 'Compare again!', lessonId: '1m3-distance' },
+    ],
   },
   {
-    id: '1m4',
+    unitId: '1m4',
     code: '1M4',
     title: 'Time (I)',
+    blurb: 'Read o’clock times.',
     strand: 'measures',
-    blurb: 'Days, clocks, and sequencing events.',
-    playable: false,
+    parts: [
+      { id: '1m4-p1', code: 'Step 1', part: 1, kind: 'clock', title: 'What hour?', blurb: 'Read the hour hand!', lessonId: '1m4-clock' },
+      { id: '1m4-p2', code: 'Step 2', part: 2, kind: 'clock', title: 'More o’clock', blurb: 'Keep reading!', lessonId: '1m4-hours' },
+    ],
   },
   {
-    id: '1s1',
+    unitId: '1s1',
     code: '1S1',
     title: '3-D shapes (I)',
+    blurb: 'Cube, cylinder, sphere, cone.',
     strand: 'shape',
-    blurb: 'Name and sort cubes, cylinders, spheres, and more.',
-    playable: false,
+    parts: [
+      { id: '1s1-p1', code: 'Step 1', part: 1, kind: 'shape', title: '3-D shapes', blurb: 'Name the solid!', lessonId: '1s1-3d' },
+    ],
   },
   {
-    id: '1s2',
+    unitId: '1s2',
     code: '1S2',
     title: '2-D shapes',
+    blurb: 'Flat shapes and sides.',
     strand: 'shape',
-    blurb: 'Circles, triangles, squares — count the sides.',
-    playable: false,
+    parts: [
+      { id: '1s2-p1', code: 'Step 1', part: 1, kind: 'shape', title: '2-D shapes', blurb: 'Name the shape!', lessonId: '1s2-2d' },
+      { id: '1s2-p2', code: 'Step 2', part: 2, kind: 'shape', title: 'Count the sides', blurb: 'Sides tell the name!', lessonId: '1s2-sides' },
+    ],
   },
   {
-    id: '1s3',
+    unitId: '1s3',
     code: '1S3',
     title: 'Directions and positions (I)',
+    blurb: 'Left, right, over, under…',
     strand: 'shape',
-    blurb: 'Above, below, left, right — where is it?',
-    playable: false,
+    parts: [
+      { id: '1s3-p1', code: 'Step 1', part: 1, kind: 'space', title: 'Where is it?', blurb: 'Find the ball!', lessonId: '1s3-space' },
+      { id: '1s3-p2', code: 'Step 2', part: 2, kind: 'space', title: 'More positions', blurb: 'Behind and more!', lessonId: '1s3-behind' },
+    ],
   },
   {
-    id: '1f1',
+    unitId: '1f1',
     code: '1F1',
     title: 'Inquiry and investigation',
+    blurb: 'Ask, try, check, explain.',
     strand: 'inquiry',
-    blurb: 'Ask, try, and explain with maths.',
-    playable: false,
+    parts: [
+      { id: '1f1-p1', code: 'Step 1', part: 1, kind: 'inquiry', title: 'Ask & check', blurb: 'Guess, then see!', lessonId: '1f1-ask' },
+      { id: '1f1-p2', code: 'Step 2', part: 2, kind: 'inquiry', title: 'Explain why', blurb: 'Say what you notice!', lessonId: '1f1-explain' },
+    ],
   },
 ]
 
+/** Flat unit cards for any leftover UI — all playable via series. */
+export const p1Units: P1Unit[] = allUnitSeries.map((s) => ({
+  id: s.unitId,
+  code: s.code,
+  title: s.title,
+  strand: s.strand,
+  blurb: s.blurb,
+  playable: true,
+  lessonId: s.parts[0]?.lessonId,
+}))
+
 export const strandOrder = ['number', 'measures', 'shape', 'inquiry'] as const
 
-export const allLessons: Lesson[] = [...numbersTo20Lessons]
+export const allLessons: Lesson[] = [
+  ...numbersTo20Lessons,
+  ...restOfP1Lessons,
+]
+
+/** Curriculum order for next-step chaining */
+export const lessonOrder: string[] = allUnitSeries.flatMap((s) =>
+  s.parts.map((p) => p.lessonId),
+)
 
 export function getLesson(id: string): Lesson | undefined {
   return allLessons.find((l) => l.id === id)
 }
 
 export function nextLessonId(id: string): string | null {
-  const order = numbersTo20Lessons.map((l) => l.id)
-  const i = order.indexOf(id)
-  if (i < 0 || i >= order.length - 1) return null
-  return order[i + 1]
+  const i = lessonOrder.indexOf(id)
+  if (i < 0 || i >= lessonOrder.length - 1) return null
+  return lessonOrder[i + 1]
 }

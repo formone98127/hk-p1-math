@@ -1,381 +1,155 @@
+import { compareQA, countQA, oddEvenQA, splitQA, lesson } from './builders'
 import type { Lesson } from './types'
 
-/** Tiny step-by-step lessons for ~age 6. Each = one idea, few examples, Q then A. */
-
-function countQA(
-  id: string,
-  n: number,
-  qPrompt: string,
-  aPrompt: string,
-): Lesson['beats'] {
-  return [
-    {
-      id: `${id}q`,
-      caption: 'Think…',
-      prompt: qPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'ask', countTo: n, showAnswer: false },
-      },
-    },
-    {
-      id: `${id}a`,
-      caption: `${n} — yes!`,
-      prompt: aPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'count', countTo: n, showAnswer: true },
-      },
-    },
-  ]
-}
-
-function compareQA(
-  id: string,
-  a: number,
-  b: number,
-  qPrompt: string,
-  aCaption: string,
-  aPrompt: string,
-): Lesson['beats'] {
-  return [
-    {
-      id: `${id}q`,
-      caption: 'Look…',
-      prompt: qPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: a, groupB: b, showAnswer: false },
-      },
-    },
-    {
-      id: `${id}a`,
-      caption: aCaption,
-      prompt: aPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: a, groupB: b, showAnswer: true },
-      },
-    },
-  ]
-}
-
-function oddEvenQA(
-  id: string,
-  n: number,
-  qPrompt: string,
-  aCaption: string,
-  aPrompt: string,
-): Lesson['beats'] {
-  return [
-    {
-      id: `${id}q`,
-      caption: 'Think…',
-      prompt: qPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: n, showAnswer: false },
-      },
-    },
-    {
-      id: `${id}a`,
-      caption: aCaption,
-      prompt: aPrompt,
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: n, showAnswer: true },
-      },
-    },
-  ]
-}
-
-function splitQA(
-  id: string,
-  total: number,
-  partA: number,
-  partB: number,
-  qPrompt: string,
-  aPrompt: string,
-): Lesson['beats'] {
-  return [
-    {
-      id: `${id}q`,
-      caption: String(total),
-      prompt: qPrompt,
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total,
-          partA,
-          partB,
-          showAnswer: false,
-        },
-      },
-    },
-    {
-      id: `${id}a`,
-      caption: `${partA} + ${partB} = ${total}`,
-      prompt: aPrompt,
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total,
-          partA,
-          partB,
-          showAnswer: true,
-        },
-      },
-    },
-  ]
-}
-
-/** 1 · Count small numbers */
-export const lessonCountSmall: Lesson = {
-  id: '1n1-count-small',
-  title: 'Step 1 · Count to 5',
-  subtitle: 'Tiny groups first!',
-  lab: true,
-  gotItSub: 'You can count to 5. Super start!',
-  beats: [
-    ...countQA('a', 2, 'How many dots?', 'Two! Great!'),
-    ...countQA('b', 3, 'How many now?', 'Three! Yes!'),
-    ...countQA('c', 5, 'How many?', 'Five! You did it!'),
+/** 1 · Count small numbers — 5 examples */
+export const lessonCountSmall = lesson(
+  '1n1-count-small',
+  'Step 1 · Count to 5',
+  'Tiny groups first!',
+  'You can count to 5. Super start!',
+  [
+    ...countQA('a', 1, 'How many dots?', 'One! Great!'),
+    ...countQA('b', 2, 'How many now?', 'Two! Yes!'),
+    ...countQA('c', 3, 'How many?', 'Three! Nice!'),
+    ...countQA('d', 4, 'Count these!', 'Four! Super!'),
+    ...countQA('e', 5, 'How many?', 'Five! You did it!'),
   ],
-}
+)
 
 /** 2 · Count bigger */
-export const lessonCountBig: Lesson = {
-  id: '1n1-count-big',
-  title: 'Step 2 · Count to 10',
-  subtitle: 'A little more!',
-  lab: true,
-  gotItSub: 'You can count to 10. Amazing!',
-  beats: [
+export const lessonCountBig = lesson(
+  '1n1-count-big',
+  'Step 2 · Count to 10',
+  'A little more!',
+  'You can count to 10. Amazing!',
+  [
     ...countQA('a', 6, 'How many dots?', 'Six! Nice!'),
-    ...countQA('b', 8, 'Count these!', 'Eight! Super!'),
-    ...countQA('c', 10, 'How many?', 'Ten! Wow!'),
+    ...countQA('b', 7, 'Count these!', 'Seven! Yes!'),
+    ...countQA('c', 8, 'How many?', 'Eight! Super!'),
+    ...countQA('d', 9, 'Almost ten…', 'Nine! Great!'),
+    ...countQA('e', 10, 'How many?', 'Ten! Wow!'),
   ],
-}
+)
 
 /** 3 · Which has more */
-export const lessonMore: Lesson = {
-  id: '1n1-more',
-  title: 'Step 3 · Which has more?',
-  subtitle: 'Find the bigger group!',
-  lab: true,
-  gotItSub: 'You can find which has more. Brilliant!',
-  beats: [
-    ...compareQA(
-      'a',
-      5,
-      2,
-      'Which has more — red or blue?',
-      '5 more · 2 less',
-      'Red has more. Good eyes!',
-    ),
-    ...compareQA(
-      'b',
-      3,
-      7,
-      'Which has more?',
-      '3 less · 7 more',
-      'Blue has more. Yes!',
-    ),
-    ...compareQA(
-      'c',
-      8,
-      4,
-      'Which side is more?',
-      '8 more · 4 less',
-      'Red has more. Fantastic!',
-    ),
+export const lessonMore = lesson(
+  '1n1-more',
+  'Step 3 · Which has more?',
+  'Find the bigger group!',
+  'You can find which has more. Brilliant!',
+  [
+    ...compareQA('a', 5, 2, 'Which has more — red or blue?', '5 more · 2 less', 'Red has more. Good eyes!'),
+    ...compareQA('b', 3, 7, 'Which has more?', '3 less · 7 more', 'Blue has more. Yes!'),
+    ...compareQA('c', 8, 4, 'Which side is more?', '8 more · 4 less', 'Red has more. Fantastic!'),
+    ...compareQA('d', 1, 6, 'Which has more?', '1 less · 6 more', 'Blue has more. Nice!'),
+    ...compareQA('e', 9, 5, 'Look carefully…', '9 more · 5 less', 'Red has more. You rock!'),
   ],
-}
+)
 
 /** 4 · Which has less */
-export const lessonLess: Lesson = {
-  id: '1n1-less',
-  title: 'Step 4 · Which has less?',
-  subtitle: 'Find the smaller group!',
-  lab: true,
-  gotItSub: 'You can find which has less. Clever!',
-  beats: [
-    ...compareQA(
-      'a',
-      6,
-      3,
-      'Which has less?',
-      '6 more · 3 less',
-      'Blue has less. Nice!',
-    ),
-    ...compareQA(
-      'b',
-      2,
-      5,
-      'Which has less — red or blue?',
-      '2 less · 5 more',
-      'Red has less. Yes!',
-    ),
-    ...compareQA(
-      'c',
-      4,
-      9,
-      'Which side is less?',
-      '4 less · 9 more',
-      'Red has less. Great job!',
-    ),
+export const lessonLess = lesson(
+  '1n1-less',
+  'Step 4 · Which has less?',
+  'Find the smaller group!',
+  'You can find which has less. Clever!',
+  [
+    ...compareQA('a', 6, 3, 'Which has less?', '6 more · 3 less', 'Blue has less. Nice!'),
+    ...compareQA('b', 2, 5, 'Which has less — red or blue?', '2 less · 5 more', 'Red has less. Yes!'),
+    ...compareQA('c', 4, 9, 'Which side is less?', '4 less · 9 more', 'Red has less. Great job!'),
+    ...compareQA('d', 8, 1, 'Which has less?', '8 more · 1 less', 'Blue has less. Super!'),
+    ...compareQA('e', 7, 3, 'Find the smaller group!', '7 more · 3 less', 'Blue has less. Clever!'),
   ],
-}
+)
 
 /** 5 · Same */
-export const lessonSame: Lesson = {
-  id: '1n1-same',
-  title: 'Step 5 · The same!',
-  subtitle: 'When both sides match',
-  lab: true,
-  gotItSub: 'You can spot the same number. Smart!',
-  beats: [
-    ...compareQA(
-      'a',
-      3,
-      3,
-      'More, less, or the same?',
-      'Same — 3 and 3',
-      'Same! Clever!',
-    ),
-    ...compareQA(
-      'b',
-      5,
-      5,
-      'Are they the same?',
-      'Same — 5 and 5',
-      'Yes — same on both sides!',
-    ),
-    ...compareQA(
-      'c',
-      4,
-      4,
-      'Look carefully…',
-      'Same — 4 and 4',
-      'Same again! You rock!',
-    ),
+export const lessonSame = lesson(
+  '1n1-same',
+  'Step 5 · The same!',
+  'When both sides match',
+  'You can spot the same number. Smart!',
+  [
+    ...compareQA('a', 3, 3, 'More, less, or the same?', 'Same — 3 and 3', 'Same! Clever!'),
+    ...compareQA('b', 5, 5, 'Are they the same?', 'Same — 5 and 5', 'Yes — same on both sides!'),
+    ...compareQA('c', 4, 4, 'Look carefully…', 'Same — 4 and 4', 'Same again! You rock!'),
+    ...compareQA('d', 2, 2, 'Match?', 'Same — 2 and 2', 'Same! Perfect!'),
+    ...compareQA('e', 6, 6, 'Are both sides equal?', 'Same — 6 and 6', 'Same! Superstar!'),
   ],
-}
+)
 
 /** 6 · Even */
-export const lessonEven: Lesson = {
-  id: '1n1-even',
-  title: 'Step 6 · Even — all in pairs',
-  subtitle: 'Everyone finds a friend!',
-  lab: true,
-  gotItSub: 'Even numbers make pairs. You got it!',
-  beats: [
-    ...oddEvenQA(
-      'a',
-      4,
-      'Can everyone find a pair?',
-      '4 — even!',
-      'Yes! All in pairs. Hooray!',
-    ),
-    ...oddEvenQA(
-      'b',
-      6,
-      'Six friends — any left alone?',
-      '6 — even!',
-      'No one left! Even!',
-    ),
-    ...oddEvenQA(
-      'c',
-      8,
-      'Eight — pairs?',
-      '8 — even!',
-      'Perfect pairs. Awesome!',
-    ),
+export const lessonEven = lesson(
+  '1n1-even',
+  'Step 6 · Even — all in pairs',
+  'Everyone finds a friend!',
+  'Even numbers make pairs. You got it!',
+  [
+    ...oddEvenQA('a', 2, 'Can everyone find a pair?', '2 — even!', 'Yes! A pair. Hooray!'),
+    ...oddEvenQA('b', 4, 'Four friends — pairs?', '4 — even!', 'All in pairs. Yes!'),
+    ...oddEvenQA('c', 6, 'Six — any left alone?', '6 — even!', 'No one left! Even!'),
+    ...oddEvenQA('d', 8, 'Eight — pairs?', '8 — even!', 'Perfect pairs. Awesome!'),
+    ...oddEvenQA('e', 10, 'Ten friends?', '10 — even!', 'All paired up. Brilliant!'),
   ],
-}
+)
 
 /** 7 · Odd */
-export const lessonOdd: Lesson = {
-  id: '1n1-odd',
-  title: 'Step 7 · Odd — one left alone',
-  subtitle: 'Someone has no pair!',
-  lab: true,
-  gotItSub: 'Odd numbers leave one alone. You spotted it!',
-  beats: [
-    ...oddEvenQA(
-      'a',
-      3,
-      'Can everyone find a pair?',
-      '3 — odd!',
-      'One left alone. That’s odd!',
-    ),
-    ...oddEvenQA(
-      'b',
-      5,
-      'Five friends?',
-      '5 — odd!',
-      'One left alone. Yes!',
-    ),
-    ...oddEvenQA(
-      'c',
-      7,
-      'Seven — leftover?',
-      '7 — odd!',
-      'One alone. Great spotting!',
-    ),
+export const lessonOdd = lesson(
+  '1n1-odd',
+  'Step 7 · Odd — one left alone',
+  'Someone has no pair!',
+  'Odd numbers leave one alone. You spotted it!',
+  [
+    ...oddEvenQA('a', 1, 'Can everyone find a pair?', '1 — odd!', 'One alone. That’s odd!'),
+    ...oddEvenQA('b', 3, 'Three friends?', '3 — odd!', 'One left alone. Yes!'),
+    ...oddEvenQA('c', 5, 'Five — leftover?', '5 — odd!', 'One alone. Great spotting!'),
+    ...oddEvenQA('d', 7, 'Seven friends?', '7 — odd!', 'One left. Clever!'),
+    ...oddEvenQA('e', 9, 'Nine — pairs?', '9 — odd!', 'One alone. You got it!'),
   ],
-}
+)
 
 /** 8 · Split small */
-export const lessonSplitSmall: Lesson = {
-  id: '1n1-split-small',
-  title: 'Step 8 · Split small numbers',
-  subtitle: 'Pull apart tiny totals!',
-  lab: true,
-  gotItSub: 'You can split small numbers. Cool!',
-  beats: [
-    ...splitQA('a', 4, 1, 3, 'Can we split 4?', '1 and 3 make 4. Cool!'),
-    ...splitQA('b', 5, 2, 3, 'Can we split 5?', '2 and 3 make 5. Nice!'),
-    ...splitQA('c', 6, 2, 4, 'Can we split 6?', '2 and 4 make 6. Yes!'),
+export const lessonSplitSmall = lesson(
+  '1n1-split-small',
+  'Step 8 · Split small numbers',
+  'Pull apart tiny totals!',
+  'You can split small numbers. Cool!',
+  [
+    ...splitQA('a', 3, 1, 2, 'Can we split 3?', '1 and 2 make 3. Cool!'),
+    ...splitQA('b', 4, 1, 3, 'Can we split 4?', '1 and 3 make 4. Nice!'),
+    ...splitQA('c', 5, 2, 3, 'Can we split 5?', '2 and 3 make 5. Yes!'),
+    ...splitQA('d', 6, 2, 4, 'Can we split 6?', '2 and 4 make 6. Super!'),
+    ...splitQA('e', 7, 3, 4, 'Can we split 7?', '3 and 4 make 7. Wow!'),
   ],
-}
+)
 
 /** 9 · Split to 10 */
-export const lessonSplitTen: Lesson = {
-  id: '1n1-split-ten',
-  title: 'Step 9 · Split to 10',
-  subtitle: 'Bigger splits!',
-  lab: true,
-  gotItSub: 'You can split numbers up to 10. Super!',
-  beats: [
+export const lessonSplitTen = lesson(
+  '1n1-split-ten',
+  'Step 9 · Split to 10',
+  'Bigger splits!',
+  'You can split numbers up to 10. Super!',
+  [
     ...splitQA('a', 8, 3, 5, 'Can we split 8?', '3 and 5 make 8. Nice!'),
     ...splitQA('b', 9, 4, 5, 'Can we split 9?', '4 and 5 make 9. Yes!'),
     ...splitQA('c', 10, 4, 6, 'Can we split 10?', '4 and 6 make 10. Wow!'),
+    ...splitQA('d', 10, 2, 8, 'Another way for 10?', '2 and 8 make 10 too!'),
+    ...splitQA('e', 10, 5, 5, 'Split 10 in half?', '5 and 5 — same both sides!'),
   ],
-}
+)
 
 /** 10 · Split more ways */
-export const lessonSplitWays: Lesson = {
-  id: '1n1-split-ways',
-  title: 'Step 10 · Many ways to split',
-  subtitle: 'Same total, different parts!',
-  lab: true,
-  gotItSub: 'One number can split many ways. Superstar!',
-  beats: [
+export const lessonSplitWays = lesson(
+  '1n1-split-ways',
+  'Step 10 · Many ways to split',
+  'Same total, different parts!',
+  'One number can split many ways. Superstar!',
+  [
     ...splitQA('a', 10, 1, 9, 'Another way to split 10?', '1 and 9 make 10 too!'),
     ...splitQA('b', 12, 5, 7, 'Can we split 12?', '5 and 7 make 12. Yes!'),
-    ...splitQA(
-      'c',
-      12,
-      6,
-      6,
-      'Another way for 12?',
-      '6 and 6 — same both sides. You rock!',
-    ),
+    ...splitQA('c', 12, 6, 6, 'Another way for 12?', '6 and 6 — same both sides!'),
+    ...splitQA('d', 14, 6, 8, 'Can we split 14?', '6 and 8 make 14. Nice!'),
+    ...splitQA('e', 16, 7, 9, 'Can we split 16?', '7 and 9 make 16. You rock!'),
   ],
-}
+)
 
 export const numbersTo20Lessons: Lesson[] = [
   lessonCountSmall,

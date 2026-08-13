@@ -8,10 +8,12 @@ export type NumberLabMode =
   | 'challenge'
   | 'landed'
   | 'generalize'
+  | 'add'
+  | 'sub'
+  | 'tens'
 
 export type NumberLabProps = {
   mode: NumberLabMode
-  /** false = question only (no answer text/numeral/equation) */
   showAnswer?: boolean
   total?: number
   partA?: number
@@ -22,14 +24,42 @@ export type NumberLabProps = {
   onInteractComplete?: () => void
 }
 
+export type WorldLabMode =
+  | 'length'
+  | 'money'
+  | 'clock'
+  | 'shape2d'
+  | 'shape3d'
+  | 'space'
+
+export type WorldLabProps = {
+  mode: WorldLabMode
+  showAnswer?: boolean
+  /** length: relative sizes 1–5 */
+  lenA?: number
+  lenB?: number
+  /** money: coin values to show */
+  coins?: number[]
+  moneyTotal?: number
+  /** clock hour 1–12 */
+  hour?: number
+  /** 2d: triangle | square | rectangle | circle | pentagon */
+  shape2d?: 'triangle' | 'square' | 'rectangle' | 'circle' | 'pentagon'
+  /** 3d: cube | cylinder | sphere | cone */
+  shape3d?: 'cube' | 'cylinder' | 'sphere' | 'cone'
+  /** space: where is the star */
+  place?: 'over' | 'under' | 'left' | 'right' | 'inFront' | 'behind'
+  answerLabel?: string
+}
+
 export type Beat = {
   id: string
   caption: string
   prompt?: string
   gate?: 'interact'
   viz?: {
-    type: 'numberLab' | 'none'
-    props?: NumberLabProps
+    type: 'numberLab' | 'worldLab' | 'none'
+    props?: NumberLabProps | WorldLabProps
   }
 }
 
