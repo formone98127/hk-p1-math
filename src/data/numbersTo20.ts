@@ -1,6 +1,6 @@
 import type { Lesson } from './types'
 
-/** 1N1 split into short kid-paced parts — one idea at a time, many examples. */
+/** 1N1 — short parts; each beat shows question + answer together with motion. */
 
 export const countLesson: Lesson = {
   id: '1n1-count',
@@ -11,51 +11,39 @@ export const countLesson: Lesson = {
   beats: [
     {
       id: 'c0',
-      caption: 'Look',
-      prompt: 'How many yellow dots?',
-      viz: { type: 'numberLab', props: { mode: 'ask', countTo: 3 } },
-    },
-    {
-      id: 'c1',
-      caption: 'Count',
-      prompt: 'Count with me: one, two, three.',
+      caption: '3',
+      prompt: 'How many? Three!',
       viz: { type: 'numberLab', props: { mode: 'count', countTo: 3 } },
     },
     {
-      id: 'c2',
-      caption: 'Try again',
-      prompt: 'New dots! How many now?',
-      viz: { type: 'numberLab', props: { mode: 'ask', countTo: 5 } },
-    },
-    {
-      id: 'c3',
-      caption: 'Count',
-      prompt: 'One, two, three, four, five.',
+      id: 'c1',
+      caption: '5',
+      prompt: 'How many? Five!',
       viz: { type: 'numberLab', props: { mode: 'count', countTo: 5 } },
     },
     {
-      id: 'c4',
-      caption: 'Bigger group',
-      prompt: 'How many this time?',
-      viz: { type: 'numberLab', props: { mode: 'ask', countTo: 8 } },
-    },
-    {
-      id: 'c5',
-      caption: 'Count',
-      prompt: 'Count all the way to eight.',
+      id: 'c2',
+      caption: '8',
+      prompt: 'How many? Eight!',
       viz: { type: 'numberLab', props: { mode: 'count', countTo: 8 } },
     },
     {
-      id: 'c6',
-      caption: 'One more try',
-      prompt: 'Last one — how many?',
-      viz: { type: 'numberLab', props: { mode: 'ask', countTo: 10 } },
+      id: 'c3',
+      caption: '10',
+      prompt: 'How many? Ten!',
+      viz: { type: 'numberLab', props: { mode: 'count', countTo: 10 } },
     },
     {
-      id: 'c7',
-      caption: 'Ten!',
-      prompt: 'Ten means there are ten dots.',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 10 } },
+      id: 'c4',
+      caption: '4',
+      prompt: 'How many? Four!',
+      viz: { type: 'numberLab', props: { mode: 'count', countTo: 4 } },
+    },
+    {
+      id: 'c5',
+      caption: '7',
+      prompt: 'How many? Seven!',
+      viz: { type: 'numberLab', props: { mode: 'count', countTo: 7 } },
     },
   ],
 }
@@ -69,8 +57,8 @@ export const compareLesson: Lesson = {
   beats: [
     {
       id: 'm0',
-      caption: 'Two groups',
-      prompt: 'Red or blue — which has more?',
+      caption: '5 more · 3 less',
+      prompt: 'Red has more. Blue has less.',
       viz: {
         type: 'numberLab',
         props: { mode: 'compare', groupA: 5, groupB: 3 },
@@ -78,8 +66,8 @@ export const compareLesson: Lesson = {
     },
     {
       id: 'm1',
-      caption: 'Try again',
-      prompt: 'Which side has more dots?',
+      caption: '2 less · 6 more',
+      prompt: 'Blue has more. Red has less.',
       viz: {
         type: 'numberLab',
         props: { mode: 'compare', groupA: 2, groupB: 6 },
@@ -87,8 +75,8 @@ export const compareLesson: Lesson = {
     },
     {
       id: 'm2',
-      caption: 'Same?',
-      prompt: 'Look carefully — more, less, or the same?',
+      caption: 'Same — 4 and 4',
+      prompt: 'Same number on both sides!',
       viz: {
         type: 'numberLab',
         props: { mode: 'compare', groupA: 4, groupB: 4 },
@@ -96,8 +84,8 @@ export const compareLesson: Lesson = {
     },
     {
       id: 'm3',
-      caption: 'Another one',
-      prompt: 'Which group has less?',
+      caption: '7 more · 4 less',
+      prompt: 'Red has more. Blue has less.',
       viz: {
         type: 'numberLab',
         props: { mode: 'compare', groupA: 7, groupB: 4 },
@@ -105,8 +93,8 @@ export const compareLesson: Lesson = {
     },
     {
       id: 'm4',
-      caption: 'One more',
-      prompt: 'More or less?',
+      caption: '3 less · 8 more',
+      prompt: 'Blue has more. Red has less.',
       viz: {
         type: 'numberLab',
         props: { mode: 'compare', groupA: 3, groupB: 8 },
@@ -124,38 +112,38 @@ export const oddEvenLesson: Lesson = {
   beats: [
     {
       id: 'o0',
-      caption: 'Hold hands',
-      prompt: 'Can everyone find a pair?',
+      caption: '4 — even',
+      prompt: 'Four friends — everyone has a pair!',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 4 } },
     },
     {
       id: 'o1',
-      caption: 'Try 5',
-      prompt: 'What about five friends?',
+      caption: '5 — odd',
+      prompt: 'Five — one friend is left alone.',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 5 } },
     },
     {
       id: 'o2',
-      caption: 'Try 6',
-      prompt: 'Six friends — any left alone?',
+      caption: '6 — even',
+      prompt: 'Six — all in pairs.',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 6 } },
     },
     {
       id: 'o3',
-      caption: 'Try 7',
-      prompt: 'Seven — pairs or leftover?',
+      caption: '7 — odd',
+      prompt: 'Seven — one left alone.',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 7 } },
     },
     {
       id: 'o4',
-      caption: 'Try 8',
-      prompt: 'Eight friends holding hands.',
+      caption: '8 — even',
+      prompt: 'Eight — perfect pairs.',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 8 } },
     },
     {
       id: 'o5',
-      caption: 'Try 9',
-      prompt: 'Nine — is one left alone?',
+      caption: '9 — odd',
+      prompt: 'Nine — one left alone.',
       viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 9 } },
     },
   ],
@@ -170,78 +158,56 @@ export const splitLesson: Lesson = {
   beats: [
     {
       id: 's0',
-      caption: 'Split 6',
-      prompt: 'Tap to split 6 into two parts.',
-      gate: 'interact',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'challenge', total: 6, partA: 2, partB: 4 },
-      },
-    },
-    {
-      id: 's1',
-      caption: 'See?',
-      prompt: '2 and 4 make 6.',
+      caption: '2 + 4 = 6',
+      prompt: 'Watch 6 split into 2 and 4.',
       viz: {
         type: 'numberLab',
         props: { mode: 'landed', total: 6, partA: 2, partB: 4 },
       },
     },
     {
-      id: 's2',
-      caption: 'Split 8',
-      prompt: 'Now split 8 another way.',
-      gate: 'interact',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'challenge', total: 8, partA: 3, partB: 5 },
-      },
-    },
-    {
-      id: 's3',
-      caption: 'Join',
-      prompt: '3 and 5 make 8.',
+      id: 's1',
+      caption: '3 + 5 = 8',
+      prompt: 'Watch 8 split into 3 and 5.',
       viz: {
         type: 'numberLab',
         props: { mode: 'landed', total: 8, partA: 3, partB: 5 },
       },
     },
     {
-      id: 's4',
-      caption: 'Split 10',
-      prompt: 'Split ten into two parts.',
-      gate: 'interact',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'challenge', total: 10, partA: 4, partB: 6 },
-      },
-    },
-    {
-      id: 's5',
-      caption: 'Join',
-      prompt: '4 and 6 make 10.',
+      id: 's2',
+      caption: '4 + 6 = 10',
+      prompt: 'Watch 10 split into 4 and 6.',
       viz: {
         type: 'numberLab',
         props: { mode: 'landed', total: 10, partA: 4, partB: 6 },
       },
     },
     {
-      id: 's6',
-      caption: 'Split 12',
-      prompt: 'One more — split 12.',
-      gate: 'interact',
+      id: 's3',
+      caption: '5 + 7 = 12',
+      prompt: 'Watch 12 split into 5 and 7.',
       viz: {
         type: 'numberLab',
-        props: { mode: 'challenge', total: 12, partA: 5, partB: 7 },
+        props: { mode: 'landed', total: 12, partA: 5, partB: 7 },
       },
     },
     {
-      id: 's7',
-      caption: 'Always works',
-      prompt: '5 and 7 make 12. You can split numbers this way again and again.',
+      id: 's4',
+      caption: '1 + 9 = 10',
+      prompt: 'Another way: 10 is also 1 and 9.',
       viz: {
         type: 'numberLab',
-        props: { mode: 'generalize', total: 12, partA: 5, partB: 7 },
+        props: { mode: 'landed', total: 10, partA: 1, partB: 9 },
+      },
+    },
+    {
+      id: 's5',
+      caption: '6 + 6 = 12',
+      prompt: 'Same number both sides — 6 and 6 make 12.',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'generalize', total: 12, partA: 6, partB: 6 },
       },
     },
   ],
@@ -254,5 +220,4 @@ export const numbersTo20Lessons: Lesson[] = [
   splitLesson,
 ]
 
-/** @deprecated use numbersTo20Lessons[0] */
 export const numbersTo20Lesson = countLesson

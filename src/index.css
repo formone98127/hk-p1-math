@@ -446,11 +446,65 @@ a.primary {
   stroke: rgba(12, 18, 16, 0.45);
   stroke-width: 1.1;
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
-  transition: opacity 0.2s ease;
+}
+
+.counter-pop {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: counter-pop-in 0.55s cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
+}
+
+@keyframes counter-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.answer-pop {
+  opacity: 0;
+  animation: answer-in 0.45s ease forwards;
+  animation-delay: 0.05s;
+}
+
+@keyframes answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .number-lab.is-flying .counter-dot {
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+}
+
+.pair-ring.answer-pop {
+  opacity: 0;
+  animation: answer-in 0.5s ease forwards;
+}
+
+.auto-fit.replay-split {
+  margin-top: 0.15rem;
+  animation: none;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(255, 209, 102, 0.45);
+  box-shadow: none;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.95rem;
 }
 
 .counter-idx {
@@ -549,17 +603,10 @@ a.primary {
   justify-content: center;
   gap: 0.4rem;
   align-items: baseline;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.45s ease,
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
   min-height: 1.6em;
 }
 .number-eq.show {
   opacity: 1;
-  transform: translateY(0);
 }
 .number-eq .a {
   color: var(--a);

@@ -22,6 +22,7 @@ type UiDict = {
   challengeHint: string
   gateChip: string
   autoSplit: string
+  watchAgain: string
   missing: string
   backHome: string
   moreLabel: string
@@ -54,6 +55,7 @@ export const ui: Record<Locale, UiDict> = {
     challengeHint: 'tap the yellow button',
     gateChip: 'Tap the yellow button',
     autoSplit: 'Split apart →',
+    watchAgain: 'Watch again →',
     missing: 'Lesson not found.',
     backHome: 'Back home',
     moreLabel: 'more',
@@ -84,6 +86,7 @@ export const ui: Record<Locale, UiDict> = {
     challengeHint: '先按黃色按鈕',
     gateChip: '按黃色按鈕',
     autoSplit: '拆開看看 →',
+    watchAgain: '再看一次 →',
     missing: '找不到這一課。',
     backHome: '回家',
     moreLabel: '較多',
