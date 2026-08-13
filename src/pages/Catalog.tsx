@@ -86,10 +86,10 @@ function SoonPreview() {
   )
 }
 
-function previewFor(part: number) {
-  if (part === 1) return <CountPreview />
-  if (part === 2) return <ComparePreview />
-  if (part === 3) return <PairPreview />
+function previewFor(kind: string) {
+  if (kind === 'count') return <CountPreview />
+  if (kind === 'compare') return <ComparePreview />
+  if (kind === 'pairs') return <PairPreview />
   return <SplitPreview />
 }
 
@@ -126,7 +126,7 @@ export function Catalog() {
                 className={`topic-card hero-card ${part.part === 1 ? 'first-part' : ''}`}
                 to={`/lesson/${part.lessonId}`}
               >
-                <div className="preview">{previewFor(part.part)}</div>
+                    <div className="preview">{previewFor(part.kind)}</div>
                 <span className="unit-code">{P.code}</span>
                 <strong>{P.title}</strong>
                 <em>{P.blurb}</em>

@@ -1,388 +1,393 @@
 import type { Lesson } from './types'
 
-/** Each example = question beat, then answer beat (never together). */
+/** Tiny step-by-step lessons for ~age 6. Each = one idea, few examples, Q then A. */
 
-export const countLesson: Lesson = {
-  id: '1n1-count',
-  title: 'Part 1 · How many?',
-  subtitle: 'Count with me!',
+function countQA(
+  id: string,
+  n: number,
+  qPrompt: string,
+  aPrompt: string,
+): Lesson['beats'] {
+  return [
+    {
+      id: `${id}q`,
+      caption: 'Think…',
+      prompt: qPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'ask', countTo: n, showAnswer: false },
+      },
+    },
+    {
+      id: `${id}a`,
+      caption: `${n} — yes!`,
+      prompt: aPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'count', countTo: n, showAnswer: true },
+      },
+    },
+  ]
+}
+
+function compareQA(
+  id: string,
+  a: number,
+  b: number,
+  qPrompt: string,
+  aCaption: string,
+  aPrompt: string,
+): Lesson['beats'] {
+  return [
+    {
+      id: `${id}q`,
+      caption: 'Look…',
+      prompt: qPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: a, groupB: b, showAnswer: false },
+      },
+    },
+    {
+      id: `${id}a`,
+      caption: aCaption,
+      prompt: aPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: a, groupB: b, showAnswer: true },
+      },
+    },
+  ]
+}
+
+function oddEvenQA(
+  id: string,
+  n: number,
+  qPrompt: string,
+  aCaption: string,
+  aPrompt: string,
+): Lesson['beats'] {
+  return [
+    {
+      id: `${id}q`,
+      caption: 'Think…',
+      prompt: qPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: n, showAnswer: false },
+      },
+    },
+    {
+      id: `${id}a`,
+      caption: aCaption,
+      prompt: aPrompt,
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: n, showAnswer: true },
+      },
+    },
+  ]
+}
+
+function splitQA(
+  id: string,
+  total: number,
+  partA: number,
+  partB: number,
+  qPrompt: string,
+  aPrompt: string,
+): Lesson['beats'] {
+  return [
+    {
+      id: `${id}q`,
+      caption: String(total),
+      prompt: qPrompt,
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total,
+          partA,
+          partB,
+          showAnswer: false,
+        },
+      },
+    },
+    {
+      id: `${id}a`,
+      caption: `${partA} + ${partB} = ${total}`,
+      prompt: aPrompt,
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total,
+          partA,
+          partB,
+          showAnswer: true,
+        },
+      },
+    },
+  ]
+}
+
+/** 1 · Count small numbers */
+export const lessonCountSmall: Lesson = {
+  id: '1n1-count-small',
+  title: 'Step 1 · Count to 5',
+  subtitle: 'Tiny groups first!',
   lab: true,
-  gotItSub: 'Yes! The number tells how many. You’re a counting star!',
+  gotItSub: 'You can count to 5. Super start!',
   beats: [
-    {
-      id: 'c0q',
-      caption: 'Think…',
-      prompt: 'How many yellow dots?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'ask', countTo: 3, showAnswer: false },
-      },
-    },
-    {
-      id: 'c0a',
-      caption: '3 — yes!',
-      prompt: 'Three! Great counting!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'count', countTo: 3, showAnswer: true },
-      },
-    },
-    {
-      id: 'c1q',
-      caption: 'Think…',
-      prompt: 'How many now?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'ask', countTo: 5, showAnswer: false },
-      },
-    },
-    {
-      id: 'c1a',
-      caption: '5 — yes!',
-      prompt: 'Five! You got it!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'count', countTo: 5, showAnswer: true },
-      },
-    },
-    {
-      id: 'c2q',
-      caption: 'Think…',
-      prompt: 'Can you count these?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'ask', countTo: 8, showAnswer: false },
-      },
-    },
-    {
-      id: 'c2a',
-      caption: '8 — yes!',
-      prompt: 'Eight! Super!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'count', countTo: 8, showAnswer: true },
-      },
-    },
-    {
-      id: 'c3q',
-      caption: 'Think…',
-      prompt: 'How many dots?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'ask', countTo: 10, showAnswer: false },
-      },
-    },
-    {
-      id: 'c3a',
-      caption: '10 — yes!',
-      prompt: 'Ten! Amazing!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'count', countTo: 10, showAnswer: true },
-      },
-    },
+    ...countQA('a', 2, 'How many dots?', 'Two! Great!'),
+    ...countQA('b', 3, 'How many now?', 'Three! Yes!'),
+    ...countQA('c', 5, 'How many?', 'Five! You did it!'),
   ],
 }
 
-export const compareLesson: Lesson = {
-  id: '1n1-compare',
-  title: 'Part 2 · More or less?',
-  subtitle: 'Let’s compare!',
+/** 2 · Count bigger */
+export const lessonCountBig: Lesson = {
+  id: '1n1-count-big',
+  title: 'Step 2 · Count to 10',
+  subtitle: 'A little more!',
   lab: true,
-  gotItSub: 'You can spot more and less. Brilliant!',
+  gotItSub: 'You can count to 10. Amazing!',
   beats: [
-    {
-      id: 'm0q',
-      caption: 'Look…',
-      prompt: 'Which has more — red or blue?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 5, groupB: 3, showAnswer: false },
-      },
-    },
-    {
-      id: 'm0a',
-      caption: '5 more · 3 less',
-      prompt: 'Red has more. Blue has less. Good eyes!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 5, groupB: 3, showAnswer: true },
-      },
-    },
-    {
-      id: 'm1q',
-      caption: 'Look…',
-      prompt: 'Which side has more?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 2, groupB: 6, showAnswer: false },
-      },
-    },
-    {
-      id: 'm1a',
-      caption: '2 less · 6 more',
-      prompt: 'Blue has more. Red has less. Yes!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 2, groupB: 6, showAnswer: true },
-      },
-    },
-    {
-      id: 'm2q',
-      caption: 'Look…',
-      prompt: 'More, less, or the same?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 4, groupB: 4, showAnswer: false },
-      },
-    },
-    {
-      id: 'm2a',
-      caption: 'Same — 4 and 4',
-      prompt: 'Same on both sides! Clever!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 4, groupB: 4, showAnswer: true },
-      },
-    },
-    {
-      id: 'm3q',
-      caption: 'Look…',
-      prompt: 'Which has less?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 7, groupB: 4, showAnswer: false },
-      },
-    },
-    {
-      id: 'm3a',
-      caption: '7 more · 4 less',
-      prompt: 'Red has more. Blue has less. Fantastic!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 7, groupB: 4, showAnswer: true },
-      },
-    },
+    ...countQA('a', 6, 'How many dots?', 'Six! Nice!'),
+    ...countQA('b', 8, 'Count these!', 'Eight! Super!'),
+    ...countQA('c', 10, 'How many?', 'Ten! Wow!'),
   ],
 }
 
-export const oddEvenLesson: Lesson = {
-  id: '1n1-odd-even',
-  title: 'Part 3 · Pairs',
-  subtitle: 'Find a friend!',
+/** 3 · Which has more */
+export const lessonMore: Lesson = {
+  id: '1n1-more',
+  title: 'Step 3 · Which has more?',
+  subtitle: 'Find the bigger group!',
   lab: true,
-  gotItSub: 'Even makes pairs. Odd leaves one alone. You nailed it!',
+  gotItSub: 'You can find which has more. Brilliant!',
   beats: [
-    {
-      id: 'o0q',
-      caption: 'Think…',
-      prompt: 'Can everyone find a pair?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 4, showAnswer: false },
-      },
-    },
-    {
-      id: 'o0a',
-      caption: '4 — even!',
-      prompt: 'Yes! Everyone has a pair. Hooray!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 4, showAnswer: true },
-      },
-    },
-    {
-      id: 'o1q',
-      caption: 'Think…',
-      prompt: 'What about five friends?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 5, showAnswer: false },
-      },
-    },
-    {
-      id: 'o1a',
-      caption: '5 — odd!',
-      prompt: 'One friend is left alone. That’s odd!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 5, showAnswer: true },
-      },
-    },
-    {
-      id: 'o2q',
-      caption: 'Think…',
-      prompt: 'Six friends — any left alone?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 6, showAnswer: false },
-      },
-    },
-    {
-      id: 'o2a',
-      caption: '6 — even!',
-      prompt: 'All in pairs. Perfect!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 6, showAnswer: true },
-      },
-    },
-    {
-      id: 'o3q',
-      caption: 'Think…',
-      prompt: 'Seven — pairs or leftover?',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 7, showAnswer: false },
-      },
-    },
-    {
-      id: 'o3a',
-      caption: '7 — odd!',
-      prompt: 'One left alone. You spotted it!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'oddEven', countTo: 7, showAnswer: true },
-      },
-    },
+    ...compareQA(
+      'a',
+      5,
+      2,
+      'Which has more — red or blue?',
+      '5 more · 2 less',
+      'Red has more. Good eyes!',
+    ),
+    ...compareQA(
+      'b',
+      3,
+      7,
+      'Which has more?',
+      '3 less · 7 more',
+      'Blue has more. Yes!',
+    ),
+    ...compareQA(
+      'c',
+      8,
+      4,
+      'Which side is more?',
+      '8 more · 4 less',
+      'Red has more. Fantastic!',
+    ),
   ],
 }
 
-export const splitLesson: Lesson = {
-  id: '1n1-split',
-  title: 'Part 4 · Split & join',
-  subtitle: 'Pull apart, put together!',
+/** 4 · Which has less */
+export const lessonLess: Lesson = {
+  id: '1n1-less',
+  title: 'Step 4 · Which has less?',
+  subtitle: 'Find the smaller group!',
   lab: true,
-  gotItSub: 'You can split a number and join it again. Superstar!',
+  gotItSub: 'You can find which has less. Clever!',
   beats: [
-    {
-      id: 's0q',
-      caption: '6',
-      prompt: 'Can we split 6 into two parts?',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 6,
-          partA: 2,
-          partB: 4,
-          showAnswer: false,
-        },
-      },
-    },
-    {
-      id: 's0a',
-      caption: '2 + 4 = 6',
-      prompt: 'Yes! 2 and 4 make 6. Cool!',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 6,
-          partA: 2,
-          partB: 4,
-          showAnswer: true,
-        },
-      },
-    },
-    {
-      id: 's1q',
-      caption: '8',
-      prompt: 'Can we split 8?',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 8,
-          partA: 3,
-          partB: 5,
-          showAnswer: false,
-        },
-      },
-    },
-    {
-      id: 's1a',
-      caption: '3 + 5 = 8',
-      prompt: '3 and 5 make 8. Nice!',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 8,
-          partA: 3,
-          partB: 5,
-          showAnswer: true,
-        },
-      },
-    },
-    {
-      id: 's2q',
-      caption: '10',
-      prompt: 'How can we split 10?',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 10,
-          partA: 4,
-          partB: 6,
-          showAnswer: false,
-        },
-      },
-    },
-    {
-      id: 's2a',
-      caption: '4 + 6 = 10',
-      prompt: '4 and 6 make 10. Yes!',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 10,
-          partA: 4,
-          partB: 6,
-          showAnswer: true,
-        },
-      },
-    },
-    {
-      id: 's3q',
-      caption: '12',
-      prompt: 'Can 12 split too?',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'landed',
-          total: 12,
-          partA: 5,
-          partB: 7,
-          showAnswer: false,
-        },
-      },
-    },
-    {
-      id: 's3a',
-      caption: '5 + 7 = 12',
-      prompt: '5 and 7 make 12. You rock!',
-      viz: {
-        type: 'numberLab',
-        props: {
-          mode: 'generalize',
-          total: 12,
-          partA: 5,
-          partB: 7,
-          showAnswer: true,
-        },
-      },
-    },
+    ...compareQA(
+      'a',
+      6,
+      3,
+      'Which has less?',
+      '6 more · 3 less',
+      'Blue has less. Nice!',
+    ),
+    ...compareQA(
+      'b',
+      2,
+      5,
+      'Which has less — red or blue?',
+      '2 less · 5 more',
+      'Red has less. Yes!',
+    ),
+    ...compareQA(
+      'c',
+      4,
+      9,
+      'Which side is less?',
+      '4 less · 9 more',
+      'Red has less. Great job!',
+    ),
+  ],
+}
+
+/** 5 · Same */
+export const lessonSame: Lesson = {
+  id: '1n1-same',
+  title: 'Step 5 · The same!',
+  subtitle: 'When both sides match',
+  lab: true,
+  gotItSub: 'You can spot the same number. Smart!',
+  beats: [
+    ...compareQA(
+      'a',
+      3,
+      3,
+      'More, less, or the same?',
+      'Same — 3 and 3',
+      'Same! Clever!',
+    ),
+    ...compareQA(
+      'b',
+      5,
+      5,
+      'Are they the same?',
+      'Same — 5 and 5',
+      'Yes — same on both sides!',
+    ),
+    ...compareQA(
+      'c',
+      4,
+      4,
+      'Look carefully…',
+      'Same — 4 and 4',
+      'Same again! You rock!',
+    ),
+  ],
+}
+
+/** 6 · Even */
+export const lessonEven: Lesson = {
+  id: '1n1-even',
+  title: 'Step 6 · Even — all in pairs',
+  subtitle: 'Everyone finds a friend!',
+  lab: true,
+  gotItSub: 'Even numbers make pairs. You got it!',
+  beats: [
+    ...oddEvenQA(
+      'a',
+      4,
+      'Can everyone find a pair?',
+      '4 — even!',
+      'Yes! All in pairs. Hooray!',
+    ),
+    ...oddEvenQA(
+      'b',
+      6,
+      'Six friends — any left alone?',
+      '6 — even!',
+      'No one left! Even!',
+    ),
+    ...oddEvenQA(
+      'c',
+      8,
+      'Eight — pairs?',
+      '8 — even!',
+      'Perfect pairs. Awesome!',
+    ),
+  ],
+}
+
+/** 7 · Odd */
+export const lessonOdd: Lesson = {
+  id: '1n1-odd',
+  title: 'Step 7 · Odd — one left alone',
+  subtitle: 'Someone has no pair!',
+  lab: true,
+  gotItSub: 'Odd numbers leave one alone. You spotted it!',
+  beats: [
+    ...oddEvenQA(
+      'a',
+      3,
+      'Can everyone find a pair?',
+      '3 — odd!',
+      'One left alone. That’s odd!',
+    ),
+    ...oddEvenQA(
+      'b',
+      5,
+      'Five friends?',
+      '5 — odd!',
+      'One left alone. Yes!',
+    ),
+    ...oddEvenQA(
+      'c',
+      7,
+      'Seven — leftover?',
+      '7 — odd!',
+      'One alone. Great spotting!',
+    ),
+  ],
+}
+
+/** 8 · Split small */
+export const lessonSplitSmall: Lesson = {
+  id: '1n1-split-small',
+  title: 'Step 8 · Split small numbers',
+  subtitle: 'Pull apart tiny totals!',
+  lab: true,
+  gotItSub: 'You can split small numbers. Cool!',
+  beats: [
+    ...splitQA('a', 4, 1, 3, 'Can we split 4?', '1 and 3 make 4. Cool!'),
+    ...splitQA('b', 5, 2, 3, 'Can we split 5?', '2 and 3 make 5. Nice!'),
+    ...splitQA('c', 6, 2, 4, 'Can we split 6?', '2 and 4 make 6. Yes!'),
+  ],
+}
+
+/** 9 · Split to 10 */
+export const lessonSplitTen: Lesson = {
+  id: '1n1-split-ten',
+  title: 'Step 9 · Split to 10',
+  subtitle: 'Bigger splits!',
+  lab: true,
+  gotItSub: 'You can split numbers up to 10. Super!',
+  beats: [
+    ...splitQA('a', 8, 3, 5, 'Can we split 8?', '3 and 5 make 8. Nice!'),
+    ...splitQA('b', 9, 4, 5, 'Can we split 9?', '4 and 5 make 9. Yes!'),
+    ...splitQA('c', 10, 4, 6, 'Can we split 10?', '4 and 6 make 10. Wow!'),
+  ],
+}
+
+/** 10 · Split more ways */
+export const lessonSplitWays: Lesson = {
+  id: '1n1-split-ways',
+  title: 'Step 10 · Many ways to split',
+  subtitle: 'Same total, different parts!',
+  lab: true,
+  gotItSub: 'One number can split many ways. Superstar!',
+  beats: [
+    ...splitQA('a', 10, 1, 9, 'Another way to split 10?', '1 and 9 make 10 too!'),
+    ...splitQA('b', 12, 5, 7, 'Can we split 12?', '5 and 7 make 12. Yes!'),
+    ...splitQA(
+      'c',
+      12,
+      6,
+      6,
+      'Another way for 12?',
+      '6 and 6 — same both sides. You rock!',
+    ),
   ],
 }
 
 export const numbersTo20Lessons: Lesson[] = [
-  countLesson,
-  compareLesson,
-  oddEvenLesson,
-  splitLesson,
+  lessonCountSmall,
+  lessonCountBig,
+  lessonMore,
+  lessonLess,
+  lessonSame,
+  lessonEven,
+  lessonOdd,
+  lessonSplitSmall,
+  lessonSplitTen,
+  lessonSplitWays,
 ]
 
-export const numbersTo20Lesson = countLesson
+export const numbersTo20Lesson = lessonCountSmall

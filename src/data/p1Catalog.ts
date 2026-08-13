@@ -1,50 +1,111 @@
 import type { Lesson, P1Unit } from './types'
 import { numbersTo20Lessons } from './numbersTo20'
 
-export const heroLessonId = '1n1-count'
+export const heroLessonId = '1n1-count-small'
+
+export type SeriesKind = 'count' | 'compare' | 'pairs' | 'split'
 
 export type SeriesPart = {
   id: string
   code: string
   part: number
+  kind: SeriesKind
   title: string
   blurb: string
   lessonId: string
 }
 
-/** 1N1 broken into short parts for ~age 6. */
+/** 1N1 as 10 tiny steps for ~age 6. */
 export const n1Series: SeriesPart[] = [
   {
     id: '1n1-p1',
-    code: '1N1 · 1',
+    code: 'Step 1',
     part: 1,
-    title: 'How many?',
-    blurb: 'Count with me! You can do it!',
-    lessonId: '1n1-count',
+    kind: 'count',
+    title: 'Count to 5',
+    blurb: 'Tiny groups first!',
+    lessonId: '1n1-count-small',
   },
   {
     id: '1n1-p2',
-    code: '1N1 · 2',
+    code: 'Step 2',
     part: 2,
-    title: 'More or less?',
-    blurb: 'Let’s compare — more, less, or same!',
-    lessonId: '1n1-compare',
+    kind: 'count',
+    title: 'Count to 10',
+    blurb: 'A little more!',
+    lessonId: '1n1-count-big',
   },
   {
     id: '1n1-p3',
-    code: '1N1 · 3',
+    code: 'Step 3',
     part: 3,
-    title: 'Pairs',
-    blurb: 'Find a friend — even or odd?',
-    lessonId: '1n1-odd-even',
+    kind: 'compare',
+    title: 'Which has more?',
+    blurb: 'Find the bigger group!',
+    lessonId: '1n1-more',
   },
   {
     id: '1n1-p4',
-    code: '1N1 · 4',
+    code: 'Step 4',
     part: 4,
-    title: 'Split & join',
-    blurb: 'Pull apart, put together — magic!',
-    lessonId: '1n1-split',
+    kind: 'compare',
+    title: 'Which has less?',
+    blurb: 'Find the smaller group!',
+    lessonId: '1n1-less',
+  },
+  {
+    id: '1n1-p5',
+    code: 'Step 5',
+    part: 5,
+    kind: 'compare',
+    title: 'The same!',
+    blurb: 'When both sides match',
+    lessonId: '1n1-same',
+  },
+  {
+    id: '1n1-p6',
+    code: 'Step 6',
+    part: 6,
+    kind: 'pairs',
+    title: 'Even — pairs',
+    blurb: 'Everyone finds a friend!',
+    lessonId: '1n1-even',
+  },
+  {
+    id: '1n1-p7',
+    code: 'Step 7',
+    part: 7,
+    kind: 'pairs',
+    title: 'Odd — one alone',
+    blurb: 'Someone has no pair!',
+    lessonId: '1n1-odd',
+  },
+  {
+    id: '1n1-p8',
+    code: 'Step 8',
+    part: 8,
+    kind: 'split',
+    title: 'Split small',
+    blurb: 'Pull apart tiny totals!',
+    lessonId: '1n1-split-small',
+  },
+  {
+    id: '1n1-p9',
+    code: 'Step 9',
+    part: 9,
+    kind: 'split',
+    title: 'Split to 10',
+    blurb: 'Bigger splits!',
+    lessonId: '1n1-split-ten',
+  },
+  {
+    id: '1n1-p10',
+    code: 'Step 10',
+    part: 10,
+    kind: 'split',
+    title: 'Many ways',
+    blurb: 'Same total, different parts!',
+    lessonId: '1n1-split-ways',
   },
 ]
 
