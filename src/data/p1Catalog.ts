@@ -19,7 +19,7 @@ export const n1Series: SeriesPart[] = [
     code: '1N1 · 1',
     part: 1,
     title: 'How many?',
-    blurb: 'Count the dots. The number says how many.',
+    blurb: 'Count with me! You can do it!',
     lessonId: '1n1-count',
   },
   {
@@ -27,7 +27,7 @@ export const n1Series: SeriesPart[] = [
     code: '1N1 · 2',
     part: 2,
     title: 'More or less?',
-    blurb: 'Which group has more? Which has less?',
+    blurb: 'Let’s compare — more, less, or same!',
     lessonId: '1n1-compare',
   },
   {
@@ -35,7 +35,7 @@ export const n1Series: SeriesPart[] = [
     code: '1N1 · 3',
     part: 3,
     title: 'Pairs',
-    blurb: 'Two by two — anyone left alone?',
+    blurb: 'Find a friend — even or odd?',
     lessonId: '1n1-odd-even',
   },
   {
@@ -43,7 +43,7 @@ export const n1Series: SeriesPart[] = [
     code: '1N1 · 4',
     part: 4,
     title: 'Split & join',
-    blurb: 'Break a number apart, then put it back.',
+    blurb: 'Pull apart, put together — magic!',
     lessonId: '1n1-split',
   },
 ]
