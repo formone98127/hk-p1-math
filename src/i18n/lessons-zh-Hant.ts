@@ -21,12 +21,14 @@ export const lessonsZhHant: Record<string, LessonText> = {
     subtitle: '一起來數！',
     gotItSub: '對！數字告訴我們有多少。你是數數小明星！',
     beats: {
-      c0: { caption: '3 — 對！', prompt: '有多少？三！數得真棒！' },
-      c1: { caption: '5 — 對！', prompt: '有多少？五！你做到了！' },
-      c2: { caption: '8 — 對！', prompt: '有多少？八！超棒！' },
-      c3: { caption: '10 — 對！', prompt: '有多少？十！太厲害了！' },
-      c4: { caption: '4 — 對！', prompt: '有多少？四！做得好！' },
-      c5: { caption: '7 — 對！', prompt: '有多少？七！你愈來愈棒了！' },
+      c0q: { caption: '想一想…', prompt: '黃色圓點有多少？' },
+      c0a: { caption: '3 — 對！', prompt: '三！數得真棒！' },
+      c1q: { caption: '想一想…', prompt: '現在有多少？' },
+      c1a: { caption: '5 — 對！', prompt: '五！你做到了！' },
+      c2q: { caption: '想一想…', prompt: '你數得出來嗎？' },
+      c2a: { caption: '8 — 對！', prompt: '八！超棒！' },
+      c3q: { caption: '想一想…', prompt: '有多少顆？' },
+      c3a: { caption: '10 — 對！', prompt: '十！太厲害了！' },
     },
   },
   '1n1-compare': {
@@ -34,25 +36,22 @@ export const lessonsZhHant: Record<string, LessonText> = {
     subtitle: '來比一比！',
     gotItSub: '你會看出較多和較少了。真棒！',
     beats: {
-      m0: {
+      m0q: { caption: '看看…', prompt: '哪邊較多——紅色還是藍色？' },
+      m0a: {
         caption: '5 較多 · 3 較少',
-        prompt: '看！紅色較多。藍色較少。眼睛真亮！',
+        prompt: '紅色較多。藍色較少。眼睛真亮！',
       },
-      m1: {
+      m1q: { caption: '看看…', prompt: '哪一邊較多？' },
+      m1a: {
         caption: '2 較少 · 6 較多',
         prompt: '藍色較多。紅色較少。答對了！',
       },
-      m2: {
-        caption: '一樣多 — 4 和 4',
-        prompt: '哇——兩邊一樣多！好聰明！',
-      },
-      m3: {
+      m2q: { caption: '看看…', prompt: '較多、較少，還是一樣多？' },
+      m2a: { caption: '一樣多 — 4 和 4', prompt: '兩邊一樣多！好聰明！' },
+      m3q: { caption: '看看…', prompt: '哪一組較少？' },
+      m3a: {
         caption: '7 較多 · 4 較少',
-        prompt: '紅色較多。藍色較少。你看出來了！',
-      },
-      m4: {
-        caption: '3 較少 · 8 較多',
-        prompt: '藍色較多。紅色較少。太棒了！',
+        prompt: '紅色較多。藍色較少。太棒了！',
       },
     },
   },
@@ -61,12 +60,14 @@ export const lessonsZhHant: Record<string, LessonText> = {
     subtitle: '找找同伴！',
     gotItSub: '雙數一對對。單數剩下一個。你學會了！',
     beats: {
-      o0: { caption: '4 — 雙數！', prompt: '四個朋友——大家都有伴！萬歲！' },
-      o1: { caption: '5 — 單數！', prompt: '五——有一個剩下。這是單數！' },
-      o2: { caption: '6 — 雙數！', prompt: '六——剛剛好一對對。完美！' },
-      o3: { caption: '7 — 單數！', prompt: '七——有一個剩下。你發現了！' },
-      o4: { caption: '8 — 雙數！', prompt: '八——完美一對對。太棒了！' },
-      o5: { caption: '9 — 單數！', prompt: '九——有一個剩下。做得好！' },
+      o0q: { caption: '想一想…', prompt: '大家都能找到伴嗎？' },
+      o0a: { caption: '4 — 雙數！', prompt: '對！大家都有伴。萬歲！' },
+      o1q: { caption: '想一想…', prompt: '五個朋友呢？' },
+      o1a: { caption: '5 — 單數！', prompt: '有一個剩下。這是單數！' },
+      o2q: { caption: '想一想…', prompt: '六個朋友——有人剩下嗎？' },
+      o2a: { caption: '6 — 雙數！', prompt: '剛剛好一對對。完美！' },
+      o3q: { caption: '想一想…', prompt: '七——成對還是剩下？' },
+      o3a: { caption: '7 — 單數！', prompt: '有一個剩下。你發現了！' },
     },
   },
   '1n1-split': {
@@ -74,17 +75,16 @@ export const lessonsZhHant: Record<string, LessonText> = {
     subtitle: '拆開，再合回去！',
     gotItSub: '你會把數目拆開又合上了。超級棒！',
     beats: {
-      s0: { caption: '2 + 4 = 6', prompt: '看！6 拆成 2 和 4。好酷！' },
-      s1: { caption: '3 + 5 = 8', prompt: '看見了嗎？8 拆成 3 和 5。真棒！' },
-      s2: { caption: '4 + 6 = 10', prompt: '看！10 拆成 4 和 6。對了！' },
-      s3: { caption: '5 + 7 = 12', prompt: '哇！12 拆成 5 和 7。' },
-      s4: {
-        caption: '1 + 9 = 10',
-        prompt: '另一種拆法！10 也是 1 和 9。好聰明！',
-      },
-      s5: {
-        caption: '6 + 6 = 12',
-        prompt: '兩邊一樣——6 和 6 合起來是 12。你最棒！',
+      s0q: { caption: '6', prompt: '6 可以拆成兩部分嗎？' },
+      s0a: { caption: '2 + 4 = 6', prompt: '可以！2 和 4 合起來是 6。好酷！' },
+      s1q: { caption: '8', prompt: '8 可以拆開嗎？' },
+      s1a: { caption: '3 + 5 = 8', prompt: '3 和 5 合起來是 8。真棒！' },
+      s2q: { caption: '10', prompt: '10 可以怎麼拆？' },
+      s2a: { caption: '4 + 6 = 10', prompt: '4 和 6 合起來是 10。對了！' },
+      s3q: { caption: '12', prompt: '12 也可以拆嗎？' },
+      s3a: {
+        caption: '5 + 7 = 12',
+        prompt: '5 和 7 合起來是 12。你最棒！',
       },
     },
   },

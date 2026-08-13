@@ -1,6 +1,6 @@
 import type { Lesson } from './types'
 
-/** 1N1 — short parts; big kid-friendly encouraging copy. */
+/** Each example = question beat, then answer beat (never together). */
 
 export const countLesson: Lesson = {
   id: '1n1-count',
@@ -10,40 +10,76 @@ export const countLesson: Lesson = {
   gotItSub: 'Yes! The number tells how many. You’re a counting star!',
   beats: [
     {
-      id: 'c0',
+      id: 'c0q',
+      caption: 'Think…',
+      prompt: 'How many yellow dots?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'ask', countTo: 3, showAnswer: false },
+      },
+    },
+    {
+      id: 'c0a',
       caption: '3 — yes!',
-      prompt: 'How many? Three! Great counting!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 3 } },
+      prompt: 'Three! Great counting!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'count', countTo: 3, showAnswer: true },
+      },
     },
     {
-      id: 'c1',
+      id: 'c1q',
+      caption: 'Think…',
+      prompt: 'How many now?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'ask', countTo: 5, showAnswer: false },
+      },
+    },
+    {
+      id: 'c1a',
       caption: '5 — yes!',
-      prompt: 'How many? Five! You got it!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 5 } },
+      prompt: 'Five! You got it!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'count', countTo: 5, showAnswer: true },
+      },
     },
     {
-      id: 'c2',
+      id: 'c2q',
+      caption: 'Think…',
+      prompt: 'Can you count these?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'ask', countTo: 8, showAnswer: false },
+      },
+    },
+    {
+      id: 'c2a',
       caption: '8 — yes!',
-      prompt: 'How many? Eight! Super!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 8 } },
+      prompt: 'Eight! Super!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'count', countTo: 8, showAnswer: true },
+      },
     },
     {
-      id: 'c3',
+      id: 'c3q',
+      caption: 'Think…',
+      prompt: 'How many dots?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'ask', countTo: 10, showAnswer: false },
+      },
+    },
+    {
+      id: 'c3a',
       caption: '10 — yes!',
-      prompt: 'How many? Ten! Amazing!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 10 } },
-    },
-    {
-      id: 'c4',
-      caption: '4 — yes!',
-      prompt: 'How many? Four! Nice work!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 4 } },
-    },
-    {
-      id: 'c5',
-      caption: '7 — yes!',
-      prompt: 'How many? Seven! You’re doing so well!',
-      viz: { type: 'numberLab', props: { mode: 'count', countTo: 7 } },
+      prompt: 'Ten! Amazing!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'count', countTo: 10, showAnswer: true },
+      },
     },
   ],
 }
@@ -56,48 +92,75 @@ export const compareLesson: Lesson = {
   gotItSub: 'You can spot more and less. Brilliant!',
   beats: [
     {
-      id: 'm0',
-      caption: '5 more · 3 less',
-      prompt: 'Look! Red has more. Blue has less. Good eyes!',
+      id: 'm0q',
+      caption: 'Look…',
+      prompt: 'Which has more — red or blue?',
       viz: {
         type: 'numberLab',
-        props: { mode: 'compare', groupA: 5, groupB: 3 },
+        props: { mode: 'compare', groupA: 5, groupB: 3, showAnswer: false },
       },
     },
     {
-      id: 'm1',
+      id: 'm0a',
+      caption: '5 more · 3 less',
+      prompt: 'Red has more. Blue has less. Good eyes!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: 5, groupB: 3, showAnswer: true },
+      },
+    },
+    {
+      id: 'm1q',
+      caption: 'Look…',
+      prompt: 'Which side has more?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: 2, groupB: 6, showAnswer: false },
+      },
+    },
+    {
+      id: 'm1a',
       caption: '2 less · 6 more',
       prompt: 'Blue has more. Red has less. Yes!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'compare', groupA: 2, groupB: 6 },
+        props: { mode: 'compare', groupA: 2, groupB: 6, showAnswer: true },
       },
     },
     {
-      id: 'm2',
+      id: 'm2q',
+      caption: 'Look…',
+      prompt: 'More, less, or the same?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: 4, groupB: 4, showAnswer: false },
+      },
+    },
+    {
+      id: 'm2a',
       caption: 'Same — 4 and 4',
-      prompt: 'Wow — same on both sides! Clever!',
+      prompt: 'Same on both sides! Clever!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'compare', groupA: 4, groupB: 4 },
+        props: { mode: 'compare', groupA: 4, groupB: 4, showAnswer: true },
       },
     },
     {
-      id: 'm3',
+      id: 'm3q',
+      caption: 'Look…',
+      prompt: 'Which has less?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'compare', groupA: 7, groupB: 4, showAnswer: false },
+      },
+    },
+    {
+      id: 'm3a',
       caption: '7 more · 4 less',
-      prompt: 'Red has more. Blue has less. You see it!',
+      prompt: 'Red has more. Blue has less. Fantastic!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'compare', groupA: 7, groupB: 4 },
-      },
-    },
-    {
-      id: 'm4',
-      caption: '3 less · 8 more',
-      prompt: 'Blue has more. Red has less. Fantastic!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'compare', groupA: 3, groupB: 8 },
+        props: { mode: 'compare', groupA: 7, groupB: 4, showAnswer: true },
       },
     },
   ],
@@ -111,40 +174,76 @@ export const oddEvenLesson: Lesson = {
   gotItSub: 'Even makes pairs. Odd leaves one alone. You nailed it!',
   beats: [
     {
-      id: 'o0',
+      id: 'o0q',
+      caption: 'Think…',
+      prompt: 'Can everyone find a pair?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 4, showAnswer: false },
+      },
+    },
+    {
+      id: 'o0a',
       caption: '4 — even!',
-      prompt: 'Four friends — everyone has a pair! Hooray!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 4 } },
+      prompt: 'Yes! Everyone has a pair. Hooray!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 4, showAnswer: true },
+      },
     },
     {
-      id: 'o1',
+      id: 'o1q',
+      caption: 'Think…',
+      prompt: 'What about five friends?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 5, showAnswer: false },
+      },
+    },
+    {
+      id: 'o1a',
       caption: '5 — odd!',
-      prompt: 'Five — one friend is left alone. That’s odd!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 5 } },
+      prompt: 'One friend is left alone. That’s odd!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 5, showAnswer: true },
+      },
     },
     {
-      id: 'o2',
+      id: 'o2q',
+      caption: 'Think…',
+      prompt: 'Six friends — any left alone?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 6, showAnswer: false },
+      },
+    },
+    {
+      id: 'o2a',
       caption: '6 — even!',
-      prompt: 'Six — all in pairs. Perfect!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 6 } },
+      prompt: 'All in pairs. Perfect!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 6, showAnswer: true },
+      },
     },
     {
-      id: 'o3',
+      id: 'o3q',
+      caption: 'Think…',
+      prompt: 'Seven — pairs or leftover?',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 7, showAnswer: false },
+      },
+    },
+    {
+      id: 'o3a',
       caption: '7 — odd!',
-      prompt: 'Seven — one left alone. You spotted it!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 7 } },
-    },
-    {
-      id: 'o4',
-      caption: '8 — even!',
-      prompt: 'Eight — perfect pairs. Awesome!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 8 } },
-    },
-    {
-      id: 'o5',
-      caption: '9 — odd!',
-      prompt: 'Nine — one left alone. Great job!',
-      viz: { type: 'numberLab', props: { mode: 'oddEven', countTo: 9 } },
+      prompt: 'One left alone. You spotted it!',
+      viz: {
+        type: 'numberLab',
+        props: { mode: 'oddEven', countTo: 7, showAnswer: true },
+      },
     },
   ],
 }
@@ -157,57 +256,123 @@ export const splitLesson: Lesson = {
   gotItSub: 'You can split a number and join it again. Superstar!',
   beats: [
     {
-      id: 's0',
+      id: 's0q',
+      caption: '6',
+      prompt: 'Can we split 6 into two parts?',
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total: 6,
+          partA: 2,
+          partB: 4,
+          showAnswer: false,
+        },
+      },
+    },
+    {
+      id: 's0a',
       caption: '2 + 4 = 6',
-      prompt: 'Watch! 6 splits into 2 and 4. Cool!',
+      prompt: 'Yes! 2 and 4 make 6. Cool!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'landed', total: 6, partA: 2, partB: 4 },
+        props: {
+          mode: 'landed',
+          total: 6,
+          partA: 2,
+          partB: 4,
+          showAnswer: true,
+        },
       },
     },
     {
-      id: 's1',
+      id: 's1q',
+      caption: '8',
+      prompt: 'Can we split 8?',
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total: 8,
+          partA: 3,
+          partB: 5,
+          showAnswer: false,
+        },
+      },
+    },
+    {
+      id: 's1a',
       caption: '3 + 5 = 8',
-      prompt: 'See? 8 splits into 3 and 5. Nice!',
+      prompt: '3 and 5 make 8. Nice!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'landed', total: 8, partA: 3, partB: 5 },
+        props: {
+          mode: 'landed',
+          total: 8,
+          partA: 3,
+          partB: 5,
+          showAnswer: true,
+        },
       },
     },
     {
-      id: 's2',
+      id: 's2q',
+      caption: '10',
+      prompt: 'How can we split 10?',
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total: 10,
+          partA: 4,
+          partB: 6,
+          showAnswer: false,
+        },
+      },
+    },
+    {
+      id: 's2a',
       caption: '4 + 6 = 10',
-      prompt: 'Look! 10 splits into 4 and 6. Yes!',
+      prompt: '4 and 6 make 10. Yes!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'landed', total: 10, partA: 4, partB: 6 },
+        props: {
+          mode: 'landed',
+          total: 10,
+          partA: 4,
+          partB: 6,
+          showAnswer: true,
+        },
       },
     },
     {
-      id: 's3',
+      id: 's3q',
+      caption: '12',
+      prompt: 'Can 12 split too?',
+      viz: {
+        type: 'numberLab',
+        props: {
+          mode: 'landed',
+          total: 12,
+          partA: 5,
+          partB: 7,
+          showAnswer: false,
+        },
+      },
+    },
+    {
+      id: 's3a',
       caption: '5 + 7 = 12',
-      prompt: 'Wow! 12 splits into 5 and 7.',
+      prompt: '5 and 7 make 12. You rock!',
       viz: {
         type: 'numberLab',
-        props: { mode: 'landed', total: 12, partA: 5, partB: 7 },
-      },
-    },
-    {
-      id: 's4',
-      caption: '1 + 9 = 10',
-      prompt: 'Another way! 10 is also 1 and 9. Clever!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'landed', total: 10, partA: 1, partB: 9 },
-      },
-    },
-    {
-      id: 's5',
-      caption: '6 + 6 = 12',
-      prompt: 'Same both sides — 6 and 6 make 12. You rock!',
-      viz: {
-        type: 'numberLab',
-        props: { mode: 'generalize', total: 12, partA: 6, partB: 6 },
+        props: {
+          mode: 'generalize',
+          total: 12,
+          partA: 5,
+          partB: 7,
+          showAnswer: true,
+        },
       },
     },
   ],

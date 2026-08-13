@@ -109,19 +109,18 @@ function Counter({
 
 export function NumberComposeLab({
   mode,
+  showAnswer = false,
   total = 12,
   partA = 4,
   partB = 8,
   countTo = 7,
   groupA = 5,
   groupB = 3,
-  onInteractComplete,
 }: NumberLabProps) {
   const { t } = useI18n()
   const [splitT, setSplitT] = useState(0)
   const [flying, setFlying] = useState(false)
   const [entered, setEntered] = useState(false)
-  const doneRef = useRef(false)
   const rafRef = useRef(0)
 
   const homePts = useMemo(
@@ -153,21 +152,25 @@ export function NumberComposeLab({
     [countTo],
   )
 
-  // Entrance pulse for every beat
   useEffect(() => {
     setEntered(false)
     const id = window.requestAnimationFrame(() => setEntered(true))
     return () => cancelAnimationFrame(id)
-  }, [mode, countTo, groupA, groupB, total, partA, partB])
+  }, [mode, showAnswer, countTo, groupA, groupB, total, partA, partB])
 
-  // Auto-play split whenever we show compose/decompose (answer eq visible from frame 0)
+  // Question: keep pile together. Answer: animate split.
   useEffect(() => {
     cancelAnimationFrame(rafRef.current)
-    doneRef.current = false
-
-    const needsSplit =
+    const isSplitMode =
       mode === 'challenge' || mode === 'landed' || mode === 'generalize'
-    if (!needsSplit) {
+
+    if (!isSplitMode) {
+      setSplitT(0)
+      setFlying(false)
+      return
+    }
+
+    if (!showAnswer) {
       setSplitT(0)
       setFlying(false)
       return
@@ -180,34 +183,30 @@ export function NumberComposeLab({
     const tick = (now: number) => {
       const u = easeOut(clamp01((now - start) / dur))
       setSplitT(u)
-      if (u < 1) {
-        rafRef.current = requestAnimationFrame(tick)
-      } else {
+      if (u < 1) rafRef.current = requestAnimationFrame(tick)
+      else {
         setFlying(false)
         beep()
-        if (mode === 'challenge' && !doneRef.current) {
-          doneRef.current = true
-          window.setTimeout(() => onInteractComplete?.(), 400)
-        }
       }
     }
-    // tiny beat so answer/eq paint first, then motion
     const delay = window.setTimeout(() => {
       rafRef.current = requestAnimationFrame(tick)
-    }, 80)
+    }, 60)
     return () => {
       clearTimeout(delay)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [mode, total, partA, partB, onInteractComplete])
+  }, [mode, showAnswer, total, partA, partB])
 
   const aTag =
     groupA > groupB ? t.moreLabel : groupA < groupB ? t.lessLabel : t.sameLabel
   const bTag =
     groupB > groupA ? t.moreLabel : groupB < groupA ? t.lessLabel : t.sameLabel
 
-  const showCountAnswer = mode === 'ask' || mode === 'count'
-  const showSplitEq =
+  const isCount = mode === 'ask' || mode === 'count'
+  const isCompare = mode === 'compare'
+  const isOddEven = mode === 'oddEven'
+  const isSplit =
     mode === 'challenge' || mode === 'landed' || mode === 'generalize'
   const splitDone = splitT > 0.98
 
@@ -231,7 +230,7 @@ export function NumberComposeLab({
 
   return (
     <div
-      className={`number-lab mode-${mode} ${flying ? 'is-flying' : ''} ${entered ? 'is-in' : ''} ${splitDone ? 'is-split' : ''}`}
+      className={`number-lab mode-${mode} ${flying ? 'is-flying' : ''} ${entered ? 'is-in' : ''} ${showAnswer ? 'has-answer' : 'is-question'} ${splitDone ? 'is-split' : ''}`}
     >
       <svg
         className="number-svg"
@@ -239,7 +238,7 @@ export function NumberComposeLab({
         role="img"
         aria-label="Numbers to 20 lab"
       >
-        {showCountAnswer && (
+        {isCount && (
           <g>
             {askPts.map((p, i) => (
               <Counter
@@ -248,22 +247,23 @@ export function NumberComposeLab({
                 y={p.y}
                 color={COLORS.solo}
                 delayMs={i * 70}
-                label={mode === 'count' ? String(i + 1) : undefined}
+                label={showAnswer ? String(i + 1) : undefined}
               />
             ))}
-            {/* Answer with the question — always visible */}
-            <text
-              x={190}
-              y={292}
-              textAnchor="middle"
-              className="big-num answer-pop"
-            >
-              {countTo}
-            </text>
+            {showAnswer && (
+              <text
+                x={190}
+                y={292}
+                textAnchor="middle"
+                className="big-num answer-pop"
+              >
+                {countTo}
+              </text>
+            )}
           </g>
         )}
 
-        {mode === 'compare' && (
+        {isCompare && (
           <g>
             <rect
               className="group-frame a"
@@ -299,136 +299,173 @@ export function NumberComposeLab({
                 delayMs={80 + i * 55}
               />
             ))}
-            <text
-              x={99}
-              y={48}
-              textAnchor="middle"
-              className="group-label a answer-pop"
-            >
-              {groupA} · {aTag}
-            </text>
-            <text
-              x={281}
-              y={48}
-              textAnchor="middle"
-              className="group-label b answer-pop"
-            >
-              {groupB} · {bTag}
-            </text>
+            {showAnswer && (
+              <>
+                <text
+                  x={99}
+                  y={48}
+                  textAnchor="middle"
+                  className="group-label a answer-pop"
+                >
+                  {groupA} · {aTag}
+                </text>
+                <text
+                  x={281}
+                  y={48}
+                  textAnchor="middle"
+                  className="group-label b answer-pop"
+                >
+                  {groupB} · {bTag}
+                </text>
+              </>
+            )}
           </g>
         )}
 
-        {mode === 'oddEven' && (
+        {isOddEven && (
           <g>
-            {pairs.pts.map((p, i) => {
-              const isLeft = pairs.leftover && i === pairs.pts.length - 1
+            {(showAnswer ? pairs.pts : askPts).map((p, i) => {
+              const isLeft =
+                showAnswer && pairs.leftover && i === pairs.pts.length - 1
               return (
                 <Counter
                   key={i}
                   x={p.x}
                   y={p.y}
                   color={
-                    isLeft ? COLORS.solo : i % 2 === 0 ? COLORS.a : COLORS.b
+                    showAnswer
+                      ? isLeft
+                        ? COLORS.solo
+                        : i % 2 === 0
+                          ? COLORS.a
+                          : COLORS.b
+                      : COLORS.solo
                   }
                   r={isLeft ? 16 : 14}
                   delayMs={i * 60}
                 />
               )
             })}
-            {Array.from({ length: Math.floor(countTo / 2) }).map((_, i) => {
-              const startX =
-                190 - ((Math.floor(countTo / 2) - 1) * 56) / 2
-              const cx = startX + i * 56
-              return (
-                <ellipse
-                  key={`br${i}`}
-                  cx={cx}
-                  cy={130}
-                  rx={28}
-                  ry={22}
-                  className="pair-ring answer-pop"
-                  style={{ animationDelay: `${120 + i * 80}ms` }}
-                />
-              )
-            })}
-            <text
-              x={190}
-              y={255}
-              textAnchor="middle"
-              className="pair-caption answer-pop"
-            >
-              {pairs.leftover ? t.oddLabel : t.evenLabel}
-            </text>
-            <text
-              x={190}
-              y={295}
-              textAnchor="middle"
-              className="big-num sm answer-pop"
-            >
-              {countTo}
-            </text>
+            {showAnswer &&
+              Array.from({ length: Math.floor(countTo / 2) }).map((_, i) => {
+                const startX =
+                  190 - ((Math.floor(countTo / 2) - 1) * 56) / 2
+                const cx = startX + i * 56
+                return (
+                  <ellipse
+                    key={`br${i}`}
+                    cx={cx}
+                    cy={130}
+                    rx={28}
+                    ry={22}
+                    className="pair-ring answer-pop"
+                    style={{ animationDelay: `${120 + i * 80}ms` }}
+                  />
+                )
+              })}
+            {showAnswer && (
+              <>
+                <text
+                  x={190}
+                  y={255}
+                  textAnchor="middle"
+                  className="pair-caption answer-pop"
+                >
+                  {pairs.leftover ? t.oddLabel : t.evenLabel}
+                </text>
+                <text
+                  x={190}
+                  y={295}
+                  textAnchor="middle"
+                  className="big-num sm answer-pop"
+                >
+                  {countTo}
+                </text>
+              </>
+            )}
           </g>
         )}
 
-        {showSplitEq && (
+        {isSplit && (
           <g>
-            <rect
-              className={`split-tray a ${splitT > 0.15 ? 'hot' : ''}`}
-              x={24}
-              y={56}
-              width={150}
-              height={180}
-              rx={14}
-            />
-            <rect
-              className={`split-tray b ${splitT > 0.15 ? 'hot' : ''}`}
-              x={206}
-              y={56}
-              width={150}
-              height={180}
-              rx={14}
-            />
+            {showAnswer && (
+              <>
+                <rect
+                  className={`split-tray a ${splitT > 0.15 ? 'hot' : ''}`}
+                  x={24}
+                  y={56}
+                  width={150}
+                  height={180}
+                  rx={14}
+                />
+                <rect
+                  className={`split-tray b ${splitT > 0.15 ? 'hot' : ''}`}
+                  x={206}
+                  y={56}
+                  width={150}
+                  height={180}
+                  rx={14}
+                />
+              </>
+            )}
 
             {Array.from({ length: total }).map((_, i) => {
               const home = homePts[i] ?? { x: 190, y: 150 }
               const target = i < partA ? partAPts[i] : partBPts[i - partA]
-              const local = easeOut(clamp01(splitT * 1.35 - i * 0.045))
+              const local = showAnswer
+                ? easeOut(clamp01(splitT * 1.35 - i * 0.045))
+                : 0
               const lift = Math.sin(local * Math.PI) * 22
               const x = lerp(home.x, target.x, local)
               const y = lerp(home.y, target.y, local) - lift
-              const color = i < partA ? COLORS.a : COLORS.b
+              const color = showAnswer
+                ? i < partA
+                  ? COLORS.a
+                  : COLORS.b
+                : COLORS.solo
               return (
                 <Counter
                   key={i}
                   x={x}
                   y={y}
                   color={color}
-                  pop={false}
+                  pop={!showAnswer}
+                  delayMs={!showAnswer ? i * 50 : 0}
                 />
               )
             })}
 
-            <text
-              x={99}
-              y={48}
-              textAnchor="middle"
-              className="group-label a answer-pop"
-            >
-              {partA}
-            </text>
-            <text
-              x={281}
-              y={48}
-              textAnchor="middle"
-              className="group-label b answer-pop"
-            >
-              {partB}
-            </text>
+            {!showAnswer && (
+              <text x={190} y={292} textAnchor="middle" className="big-num">
+                {total}
+              </text>
+            )}
+
+            {showAnswer && (
+              <>
+                <text
+                  x={99}
+                  y={48}
+                  textAnchor="middle"
+                  className="group-label a answer-pop"
+                >
+                  {partA}
+                </text>
+                <text
+                  x={281}
+                  y={48}
+                  textAnchor="middle"
+                  className="group-label b answer-pop"
+                >
+                  {partB}
+                </text>
+              </>
+            )}
           </g>
         )}
       </svg>
 
-      {showSplitEq && (
+      {isSplit && showAnswer && (
         <>
           <p className="number-eq show answer-pop">
             <span className="a">{partA}</span>
@@ -437,18 +474,16 @@ export function NumberComposeLab({
             <span className="op">=</span>
             <span className="sum">{total}</span>
           </p>
-          {mode === 'challenge' && (
-            <button
-              type="button"
-              className="auto-fit replay-split"
-              onClick={(e) => {
-                e.stopPropagation()
-                replaySplit()
-              }}
-            >
-              {t.watchAgain}
-            </button>
-          )}
+          <button
+            type="button"
+            className="auto-fit replay-split"
+            onClick={(e) => {
+              e.stopPropagation()
+              replaySplit()
+            }}
+          >
+            {t.watchAgain}
+          </button>
         </>
       )}
     </div>

@@ -11,6 +11,8 @@ export type NumberLabMode =
 
 export type NumberLabProps = {
   mode: NumberLabMode
+  /** false = question only (no answer text/numeral/equation) */
+  showAnswer?: boolean
   total?: number
   partA?: number
   partB?: number
