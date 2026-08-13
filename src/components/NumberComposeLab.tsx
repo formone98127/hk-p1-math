@@ -250,8 +250,6 @@ export function NumberComposeLab({
     <div
       className={`number-lab mode-${mode} ${flying ? 'is-flying' : ''} ${splitDone ? 'is-split' : ''}`}
     >
-      {mode === 'ask' && <p className="lab-hook">{t.labHookAsk}</p>}
-
       <svg
         className="number-svg"
         viewBox="0 0 380 320"
@@ -307,12 +305,30 @@ export function NumberComposeLab({
             {compareB.map((p, i) => (
               <Counter key={`b${i}`} x={p.x} y={p.y} color={COLORS.b} />
             ))}
-            <text x={99} y={48} textAnchor="middle" className="group-label a">
-              {groupA} · {t.moreLabel}
-            </text>
-            <text x={281} y={48} textAnchor="middle" className="group-label b">
-              {groupB} · {t.lessLabel}
-            </text>
+            {(() => {
+              const aTag =
+                groupA > groupB
+                  ? t.moreLabel
+                  : groupA < groupB
+                    ? t.lessLabel
+                    : t.sameLabel
+              const bTag =
+                groupB > groupA
+                  ? t.moreLabel
+                  : groupB < groupA
+                    ? t.lessLabel
+                    : t.sameLabel
+              return (
+                <>
+                  <text x={99} y={48} textAnchor="middle" className="group-label a">
+                    {groupA} · {aTag}
+                  </text>
+                  <text x={281} y={48} textAnchor="middle" className="group-label b">
+                    {groupB} · {bTag}
+                  </text>
+                </>
+              )
+            })()}
           </g>
         )}
 

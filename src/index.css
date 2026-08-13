@@ -216,6 +216,15 @@ a.primary {
 .p-dot.b {
   fill: var(--b);
 }
+.p-dot.solo {
+  fill: var(--accent);
+}
+.p-ring {
+  fill: none;
+  stroke: rgba(255, 209, 102, 0.45);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
+}
 .p-eq {
   fill: var(--accent);
   font-size: 12px;
@@ -226,6 +235,13 @@ a.primary {
   stroke: rgba(255, 255, 255, 0.12);
   stroke-width: 1;
   stroke-dasharray: 6 5;
+}
+
+.topic-head p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 42ch;
 }
 
 /* —— Player —— */

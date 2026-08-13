@@ -6,8 +6,9 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import type { SeriesPart } from '../data/p1Catalog'
 import type { Lesson, P1Unit } from '../data/types'
-import { lessonsZhHant, unitsZhHant } from './lessons-zh-Hant'
+import { lessonsZhHant, seriesZhHant, unitsZhHant } from './lessons-zh-Hant'
 import { detectLocale, saveLocale, type Locale } from './locale'
 import { ui } from './ui'
 
@@ -17,6 +18,7 @@ type I18nValue = {
   t: (typeof ui)['en']
   localizeLesson: (lesson: Lesson) => Lesson
   localizeUnit: (unit: P1Unit) => P1Unit
+  localizeSeriesPart: (part: SeriesPart) => SeriesPart
 }
 
 const I18nContext = createContext<I18nValue | null>(null)
@@ -42,6 +44,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         ...lesson,
         title: pack.title,
         subtitle: pack.subtitle,
+        gotItSub: pack.gotItSub ?? lesson.gotItSub,
         beats: lesson.beats.map((b) => {
           const tb = pack.beats[b.id]
           if (!tb) return b
@@ -61,12 +64,20 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       return { ...unit, title: pack.title, blurb: pack.blurb }
     }
 
+    const localizeSeriesPart = (part: SeriesPart): SeriesPart => {
+      if (locale !== 'zh-Hant') return part
+      const pack = seriesZhHant[part.id]
+      if (!pack) return part
+      return { ...part, title: pack.title, blurb: pack.blurb }
+    }
+
     return {
       locale,
       setLocale,
       t: ui[locale],
       localizeLesson,
       localizeUnit,
+      localizeSeriesPart,
     }
   }, [locale])
 

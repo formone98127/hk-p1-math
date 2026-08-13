@@ -36,6 +36,7 @@ export type Lesson = {
   title: string
   subtitle: string
   lab?: boolean
+  gotItSub?: string
   beats: Beat[]
 }
 

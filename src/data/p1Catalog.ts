@@ -1,19 +1,54 @@
-import type { P1Unit } from './types'
-import { numbersTo20Lesson } from './numbersTo20'
-import type { Lesson } from './types'
+import type { Lesson, P1Unit } from './types'
+import { numbersTo20Lessons } from './numbersTo20'
 
-export const heroLessonId = '1n1-numbers-to-20'
+export const heroLessonId = '1n1-count'
+
+export type SeriesPart = {
+  id: string
+  code: string
+  part: number
+  title: string
+  blurb: string
+  lessonId: string
+}
+
+/** 1N1 broken into short parts for ~age 6. */
+export const n1Series: SeriesPart[] = [
+  {
+    id: '1n1-p1',
+    code: '1N1 · 1',
+    part: 1,
+    title: 'How many?',
+    blurb: 'Count the dots. The number says how many.',
+    lessonId: '1n1-count',
+  },
+  {
+    id: '1n1-p2',
+    code: '1N1 · 2',
+    part: 2,
+    title: 'More or less?',
+    blurb: 'Which group has more? Which has less?',
+    lessonId: '1n1-compare',
+  },
+  {
+    id: '1n1-p3',
+    code: '1N1 · 3',
+    part: 3,
+    title: 'Pairs',
+    blurb: 'Two by two — anyone left alone?',
+    lessonId: '1n1-odd-even',
+  },
+  {
+    id: '1n1-p4',
+    code: '1N1 · 4',
+    part: 4,
+    title: 'Split & join',
+    blurb: 'Break a number apart, then put it back.',
+    lessonId: '1n1-split',
+  },
+]
 
 export const p1Units: P1Unit[] = [
-  {
-    id: '1n1',
-    code: '1N1',
-    title: 'Numbers to 20',
-    strand: 'number',
-    blurb: 'Count, compare, and split numbers — how many is a number?',
-    playable: true,
-    lessonId: heroLessonId,
-  },
   {
     id: '1n2',
     code: '1N2',
@@ -106,12 +141,15 @@ export const p1Units: P1Unit[] = [
 
 export const strandOrder = ['number', 'measures', 'shape', 'inquiry'] as const
 
-export const allLessons: Lesson[] = [numbersTo20Lesson]
+export const allLessons: Lesson[] = [...numbersTo20Lessons]
 
 export function getLesson(id: string): Lesson | undefined {
   return allLessons.find((l) => l.id === id)
 }
 
-export function nextLessonId(_id: string): string | null {
-  return null
+export function nextLessonId(id: string): string | null {
+  const order = numbersTo20Lessons.map((l) => l.id)
+  const i = order.indexOf(id)
+  if (i < 0 || i >= order.length - 1) return null
+  return order[i + 1]
 }

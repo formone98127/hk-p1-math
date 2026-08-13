@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { nextLessonId } from '../data/p1Catalog'
 import type { Lesson, NumberLabProps } from '../data/types'
 import { useI18n } from '../i18n/I18nProvider'
 import { LangSwitch } from './LangSwitch'
@@ -17,6 +18,7 @@ export function LessonPlayer({ lesson }: Props) {
   const beat = done ? null : lesson.beats[i]
   const progress = done ? 1 : (i + 1) / lesson.beats.length
   const gated = beat?.gate === 'interact' && !gateOk
+  const nextId = nextLessonId(lesson.id)
 
   const go = useCallback(
     (delta: number) => {
@@ -87,6 +89,8 @@ export function LessonPlayer({ lesson }: Props) {
     }, 700)
   }
 
+  const gotItSub = lesson.gotItSub ?? t.gotItSub
+
   return (
     <div
       className="player"
@@ -122,7 +126,7 @@ export function LessonPlayer({ lesson }: Props) {
           <div className="complete">
             <div className="complete-glyph">◎</div>
             <h2>{t.gotIt}</h2>
-            <p className="complete-sub">{t.gotItSub}</p>
+            <p className="complete-sub">{gotItSub}</p>
             <div className="complete-actions">
               <button
                 type="button"
@@ -134,20 +138,31 @@ export function LessonPlayer({ lesson }: Props) {
               >
                 {t.replay}
               </button>
-              <Link
-                className="primary"
-                to="/"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {t.catalog}
-              </Link>
+              {nextId ? (
+                <Link
+                  className="primary"
+                  to={`/lesson/${nextId}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {t.nextPart}
+                </Link>
+              ) : (
+                <Link
+                  className="primary"
+                  to="/"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {t.catalog}
+                </Link>
+              )}
             </div>
           </div>
         ) : (
           beat && (
             <div className="beat-stage">
               {beat.prompt && <p className="prompt">{beat.prompt}</p>}
-              <div className="viz-plane" key={lesson.lab ? lesson.id : beat.id}>
+              {/* Remount each beat so every example re-plays for kids */}
+              <div className="viz-plane" key={beat.id}>
                 {vizType === 'numberLab' && (
                   <NumberComposeLab
                     {...labProps}
