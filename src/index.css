@@ -769,6 +769,18 @@ a.primary {
   max-width: 40ch;
 }
 
+.hub-header .hub-total {
+  margin-top: 0.35rem;
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.1);
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .hub-section {
   margin-top: 2.5rem;
 }
@@ -814,6 +826,49 @@ a.primary {
   background: rgba(255, 209, 102, 0.08);
 }
 
+.hub-card-selectable {
+  padding: 0;
+}
+
+.hub-card-selectable .hub-card-main {
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+}
+
+.hub-difficulty {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.hub-difficulty-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 0.15rem;
+}
+
+.hub-difficulty-btn {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.hub-difficulty-btn:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
 .hub-card-header {
   display: flex;
   justify-content: space-between;
@@ -852,6 +907,33 @@ a.primary {
   gap: 1rem;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.hub-capacity {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hub-fresh-badge {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(184, 242, 124, 0.15);
+  border: 1px solid rgba(184, 242, 124, 0.4);
+  color: var(--op);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  animation: pulse-glow 2s ease infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(184, 242, 124, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(184, 242, 124, 0.2);
+  }
 }
 
 .practice-cta {

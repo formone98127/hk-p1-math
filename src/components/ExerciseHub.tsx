@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { allExerciseSets } from '../data/exercises'
+import { getGeneratableUnitIds, getUnitGeneratorConfig, estimateUnitQuestionCapacity, getTotalQuestionCapacity } from '../data/exerciseSetGenerators'
 import type { Strand } from '../data/types'
 
 const strandLabels: Record<Strand, string> = {
@@ -59,6 +60,9 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
         </button>
         <h1>🎯 Practice Zone</h1>
         <p>Choose a unit to practice and earn achievements!</p>
+        <p className="hub-total">
+          🎲 {getTotalQuestionCapacity().toLocaleString()}+ unique questions — fresh every session
+        </p>
       </header>
 
       {strandOrder.map((strand) => {
@@ -72,32 +76,73 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
               {strandLabels[strand]}
             </h2>
             <div className="hub-grid">
-              {sets.map((set) => (
-                <Link
-                  key={set.id}
-                  className="hub-card"
-                  to={`/practice/${set.id}`}
-                >
-                  <div className="hub-card-header">
-                    <span className="hub-unit-code">
-                      {unitLabels[set.unitId] || set.unitId.toUpperCase()}
-                    </span>
-                    <span className="hub-exercise-count">
-                      {set.exercises.length} exercises
-                    </span>
-                  </div>
-                  <h3 className="hub-card-title">{set.title}</h3>
-                  <p className="hub-card-desc">{set.description}</p>
-                  <div className="hub-card-meta">
-                    <span className="hub-points">⭐ {set.totalPoints} pts</span>
-                    {set.timeLimit && (
-                      <span className="hub-time">
-                        ⏱️ {Math.ceil(set.timeLimit / 60)}m
-                      </span>
+              {sets.map((set) => {
+                const unitId = set.unitId
+                const hasGenerator = getGeneratableUnitIds().includes(unitId)
+                const generatorConfig = hasGenerator ? getUnitGeneratorConfig(unitId) : undefined
+                const capacity = hasGenerator ? estimateUnitQuestionCapacity(unitId) : 0
+
+                // For generated units, show dynamic capacity (small pools
+                // like clocks or shapes show their real size, not '50+')
+                const displayCount = hasGenerator
+                  ? capacity >= 50
+                    ? '50+'
+                    : `~${capacity}`
+                  : set.exercises.length
+                const displayPoints = hasGenerator ? 'Variable' : set.totalPoints
+
+                return (
+                  <div
+                    key={set.id}
+                    className={`hub-card ${hasGenerator ? 'hub-card-selectable' : ''}`}
+                  >
+                    <Link className="hub-card-main" to={`/practice/${unitId}-generated`}>
+                      <div className="hub-card-header">
+                        <span className="hub-unit-code">
+                          {unitLabels[unitId] || unitId.toUpperCase()}
+                        </span>
+                        <span className="hub-exercise-count">
+                          {displayCount} exercises {hasGenerator && '🔄'}
+                        </span>
+                      </div>
+                      <h3 className="hub-card-title">{set.title}</h3>
+                      <p className="hub-card-desc">{set.description}</p>
+                      <div className="hub-card-meta">
+                        <span className="hub-points">⭐ {displayPoints} pts</span>
+                        {hasGenerator && capacity > 0 && (
+                          <span className="hub-capacity" title={`~${capacity.toLocaleString()} unique combinations`}>
+                            🎲 ~{capacity.toLocaleString()} variations
+                          </span>
+                        )}
+                        {generatorConfig?.timeLimit && (
+                          <span className="hub-time">
+                            ⏱️ {Math.ceil(generatorConfig.timeLimit / 60)}m
+                          </span>
+                        )}
+                      </div>
+                      {hasGenerator && (
+                        <div className="hub-fresh-badge">
+                          🔄 Fresh questions each time!
+                        </div>
+                      )}
+                    </Link>
+                    {hasGenerator && (
+                      <div className="hub-difficulty">
+                        <span className="hub-difficulty-label">Level</span>
+                        {(['easy', 'medium', 'hard'] as const).map((level) => (
+                          <Link
+                            key={level}
+                            className="hub-difficulty-btn"
+                            to={`/practice/${unitId}-generated?difficulty=${level}`}
+                          >
+                            {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
+                          </Link>
+                        ))}
+                      </div>
                     )}
                   </div>
-                </Link>
-              ))}
+                )
+              })}
             </div>
           </section>
         )

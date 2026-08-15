@@ -1,12 +1,51 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
-import { allExerciseSets, getQuickPractice } from '../data/exercises'
-import type { Exercise } from '../data/types'
+import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom'
+import { allExerciseSets } from '../data/exercises'
+import { generateExerciseSetForUnit, generateQuickPractice as generateNewQuickPractice, getGeneratableUnitIds } from '../data/exerciseSetGenerators'
+import type { Difficulty, Exercise } from '../data/types'
 import { checkAchievements } from '../data/achievements'
+
+// In-progress sessions are saved so a reload resumes where the kid left off
+const STORAGE_KEY = 'hk-p1-practice-session'
+
+type SavedSession = {
+  setId: string
+  difficulty?: Difficulty
+  exercises: Exercise[]
+  currentIndex: number
+  userAnswers: Record<string, string | number>
+  correctCount: number
+  streak: number
+  timeRemaining: number | null
+  showResults: boolean
+}
+
+function loadSession(): SavedSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? (JSON.parse(raw) as SavedSession) : null
+  } catch {
+    return null
+  }
+}
+
+function clearSession(): void {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    // Storage unavailable — nothing to clear
+  }
+}
 
 export function PracticeMode() {
   const { setId } = useParams<{ setId?: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const difficultyParam = searchParams.get('difficulty')
+  const difficulty: Difficulty | undefined =
+    difficultyParam === 'easy' || difficultyParam === 'medium' || difficultyParam === 'hard'
+      ? difficultyParam
+      : undefined
 
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -103,20 +142,92 @@ export function PracticeMode() {
     }
   }, [])
 
-  // Load exercises
+  // Load exercises, restoring an in-progress session when one exists
   useEffect(() => {
     if (setId === 'quick') {
-      setExercises(getQuickPractice(5))
-    } else if (setId) {
-      const set = allExerciseSets.find((s) => s.id === setId)
-      if (set) {
-        setExercises(set.exercises)
-        if (set.timeLimit) {
-          setTimeRemaining(set.timeLimit)
-        }
-      }
+      // Generate fresh quick practice exercises each time
+      setExercises(generateNewQuickPractice(5))
+      setCurrentIndex(0)
+      setUserAnswers({})
+      setCorrectCount(0)
+      setStreak(0)
+      setShowResults(false)
+      setTimeRemaining(null)
+      return
     }
-  }, [setId])
+    if (!setId) return
+
+    const saved = loadSession()
+    if (
+      saved &&
+      !saved.showResults &&
+      saved.exercises.length > 0 &&
+      saved.setId === setId &&
+      (saved.difficulty ?? undefined) === (difficulty ?? undefined)
+    ) {
+      // Resume the saved session for this exact set + difficulty
+      setExercises(saved.exercises)
+      setCurrentIndex(saved.currentIndex)
+      setUserAnswers(saved.userAnswers)
+      setCorrectCount(saved.correctCount)
+      setStreak(saved.streak)
+      setTimeRemaining(saved.timeRemaining)
+      setShowResults(false)
+      return
+    }
+
+    // No resumable session — start fresh and clear stale state
+    setCurrentIndex(0)
+    setUserAnswers({})
+    setCorrectCount(0)
+    setStreak(0)
+    setShowResults(false)
+
+    // Static sets (backward compatibility)
+    const staticSet = allExerciseSets.find((s) => s.id === setId)
+    if (staticSet) {
+      setExercises(staticSet.exercises)
+      setTimeRemaining(staticSet.timeLimit ?? null)
+      return
+    }
+
+    // Generated unit sets, optionally filtered by difficulty
+    try {
+      const unitId = setId.split('-')[0]
+      if (getGeneratableUnitIds().includes(unitId)) {
+        const generatedSet = generateExerciseSetForUnit(unitId, 50, difficulty)
+        setExercises(generatedSet.exercises)
+        setTimeRemaining(generatedSet.timeLimit ?? null)
+      } else {
+        console.warn(`No generator available for unit: ${unitId}`)
+        setExercises([])
+      }
+    } catch (error) {
+      console.error('Error generating exercises:', error)
+      setExercises([])
+    }
+  }, [setId, difficulty])
+
+  // Persist the in-progress session so a reload resumes where the kid left off
+  useEffect(() => {
+    if (!setId || setId === 'quick' || exercises.length === 0) return
+    const payload: SavedSession = {
+      setId,
+      difficulty,
+      exercises,
+      currentIndex,
+      userAnswers,
+      correctCount,
+      streak,
+      timeRemaining,
+      showResults,
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    } catch {
+      // Storage unavailable (private mode, quota) — practice still works in memory
+    }
+  }, [setId, difficulty, exercises, currentIndex, userAnswers, correctCount, streak, timeRemaining, showResults])
 
   // Timer
   useEffect(() => {
@@ -312,10 +423,10 @@ export function PracticeMode() {
         </section>
 
         <div className="results-actions">
-          <button className="btn-primary" onClick={() => navigate('/practice')}>
+          <button className="btn-primary" onClick={() => { clearSession(); navigate('/practice') }}>
             Back to Practice Zone
           </button>
-          <button className="btn-secondary" onClick={() => window.location.reload()}>
+          <button className="btn-secondary" onClick={() => { clearSession(); window.location.reload() }}>
             Try Again
           </button>
         </div>
@@ -326,7 +437,7 @@ export function PracticeMode() {
   return (
     <div className="practice-mode">
       <header className="practice-header">
-        <Link to="/practice" className="back-link">
+        <Link to="/practice" className="back-link" onClick={clearSession}>
           ← Exit
         </Link>
         <div className="practice-progress">

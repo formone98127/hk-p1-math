@@ -38,8 +38,29 @@ export function multipleChoice(
   hint?: string,
   explanation?: string,
 ): Exercise {
-  // Add correct answer and 3 wrong answers, then shuffle
-  const allOptions = [...wrongAnswers.slice(0, 3), correctAnswer]
+  // Deduplicate wrong answers against the correct answer and each other
+  // (generators sometimes produce overlapping distractors), then top up
+  // with generic distractors so every question has 3 distinct wrong options.
+  const correctStr = String(correctAnswer)
+  const seen = new Set<string>([correctStr])
+  const wrongs: string[] = []
+  for (const wrong of wrongAnswers) {
+    const key = String(wrong)
+    if (key === correctStr || seen.has(key)) continue
+    seen.add(key)
+    wrongs.push(key)
+    if (wrongs.length >= 3) break
+  }
+  const fallbacks = ['0', '1', '2', '3', '5', '10', 'yes', 'no', 'maybe', 'same']
+  for (const fallback of fallbacks) {
+    if (wrongs.length >= 3) break
+    if (seen.has(fallback)) continue
+    seen.add(fallback)
+    wrongs.push(fallback)
+  }
+
+  // Add correct answer and wrong answers, then shuffle
+  const allOptions = [...wrongs, correctStr]
     .map((value) => ({ value, sortKey: Math.random() }))
     .sort((a, b) => a.sortKey - b.sortKey)
     .map(({ value }) => value)
