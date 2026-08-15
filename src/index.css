@@ -965,6 +965,16 @@ a.primary {
   gap: 0.75rem;
 }
 
+.no-options-error {
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255, 107, 122, 0.1);
+  border: 1px solid rgba(255, 107, 122, 0.3);
+  color: #ff6b7a;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
 .option-btn {
   padding: 1rem 1.25rem;
   border-radius: 12px;

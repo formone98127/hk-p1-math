@@ -212,7 +212,7 @@ export function PracticeMode() {
 
           <h2 className="exercise-question">{currentExercise.question}</h2>
 
-          {currentExercise.type === 'multipleChoice' && currentExercise.options && (
+          {currentExercise.options && currentExercise.options.length > 0 ? (
             <div className="multiple-choice-options">
               {currentExercise.options.map((option, idx) => (
                 <button
@@ -224,21 +224,9 @@ export function PracticeMode() {
                 </button>
               ))}
             </div>
-          )}
-
-          {(currentExercise.type === 'fillBlank' ||
-            currentExercise.type === 'calculation' ||
-            currentExercise.type === 'wordProblem') && (
-            <div className="text-input-area">
-              <input
-                type="text"
-                className="exercise-input"
-                placeholder="Type your answer..."
-                value={userAnswers[currentExercise.id] || ''}
-                onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && hasAnswered && checkAnswer()}
-                autoFocus
-              />
+          ) : (
+            <div className="no-options-error">
+              No options available for this exercise.
             </div>
           )}
 
