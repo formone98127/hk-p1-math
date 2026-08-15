@@ -19,6 +19,90 @@ export function PracticeMode() {
   const [wasCorrect, setWasCorrect] = useState(false)
   const [countdown, setCountdown] = useState(0)
 
+  // Sound effects using Web Audio API
+  const playCorrectSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+
+      oscillator.frequency.value = 523.25 // C5 (happy note)
+      oscillator.type = 'sine'
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+
+      oscillator.start(audioContext.currentTime)
+      oscillator.stop(audioContext.currentTime + 0.3)
+
+      // Add a second note for a chime effect
+      setTimeout(() => {
+        const osc2 = audioContext.createOscillator()
+        const gain2 = audioContext.createGain()
+        osc2.connect(gain2)
+        gain2.connect(audioContext.destination)
+        osc2.frequency.value = 659.25 // E5
+        osc2.type = 'sine'
+        gain2.gain.setValueAtTime(0.2, audioContext.currentTime)
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
+        osc2.start(audioContext.currentTime)
+        osc2.stop(audioContext.currentTime + 0.2)
+      }, 100)
+    } catch (error) {
+      console.log('Audio not supported')
+    }
+  }, [])
+
+  const playIncorrectSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+
+      oscillator.frequency.value = 200 // Low, gentle tone
+      oscillator.type = 'triangle'
+
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
+
+      oscillator.start(audioContext.currentTime)
+      oscillator.stop(audioContext.currentTime + 0.2)
+    } catch (error) {
+      console.log('Audio not supported')
+    }
+  }, [])
+
+  const playAchievementSound = useCallback(() => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+
+      // Fanfare effect - ascending notes
+      const notes = [523.25, 659.25, 783.99, 1046.50] // C5, E5, G5, C6
+      notes.forEach((freq, index) => {
+        setTimeout(() => {
+          const oscillator = audioContext.createOscillator()
+          const gainNode = audioContext.createGain()
+          oscillator.connect(gainNode)
+          gainNode.connect(audioContext.destination)
+          oscillator.frequency.value = freq
+          oscillator.type = 'sine'
+          gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+          oscillator.start(audioContext.currentTime)
+          oscillator.stop(audioContext.currentTime + 0.3)
+        }, index * 120)
+      })
+    } catch (error) {
+      console.log('Audio not supported')
+    }
+  }, [])
+
   // Load exercises
   useEffect(() => {
     if (setId === 'quick') {
@@ -42,6 +126,25 @@ export function PracticeMode() {
     }, 1000)
     return () => clearInterval(timer)
   }, [timeRemaining, showResults])
+
+  // Play achievement sound when results show with achievements
+  useEffect(() => {
+    if (showResults) {
+      const percentage = Math.round((correctCount / exercises.length) * 100)
+      const newProgress = {
+        completedExercises: exercises.map((e) => e.id),
+        scores: { [setId || 'quick']: percentage },
+        streaks: { current: streak },
+        totalPoints: 0,
+        lastPractice: new Date().toISOString(),
+        timeSpent: {},
+      }
+      const unlockedAchievements = checkAchievements(newProgress)
+      if (unlockedAchievements.length > 0) {
+        playAchievementSound()
+      }
+    }
+  }, [showResults, correctCount, exercises.length, setId, streak, playAchievementSound])
 
   // Reset feedback when changing exercises
   useEffect(() => {
@@ -111,8 +214,10 @@ export function PracticeMode() {
       if (correct) {
         setCorrectCount((prev) => prev + 1)
         setStreak((prev) => prev + 1)
+        playCorrectSound()
       } else {
         setStreak(0)
+        playIncorrectSound()
       }
 
       setShowFeedback(true)
