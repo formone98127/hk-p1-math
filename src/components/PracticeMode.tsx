@@ -231,24 +231,27 @@ export function PracticeMode() {
               {currentExercise.options.map((option, idx) => {
                 const isSelected = userAnswers[currentExercise.id] === option
                 const isCorrect = String(option) === String(currentExercise.correctAnswer)
-                const showCorrect = showFeedback && isCorrect
-                const showIncorrect = showFeedback && isSelected && !isCorrect
+
+                // Only show feedback on the selected option
+                const showUserFeedback = showFeedback && isSelected
+                const showUserCorrect = showUserFeedback && isCorrect
+                const showUserIncorrect = showUserFeedback && !isCorrect
 
                 return (
                   <button
                     key={idx}
                     className={`option-btn
                       ${isSelected ? 'selected' : ''}
-                      ${showCorrect ? 'correct' : ''}
-                      ${showIncorrect ? 'incorrect' : ''}
+                      ${showUserCorrect ? 'correct' : ''}
+                      ${showUserIncorrect ? 'incorrect' : ''}
                       ${showFeedback ? 'disabled' : ''}
                     `}
                     onClick={() => handleInputChange(option)}
                     disabled={showFeedback}
                   >
                     {option}
-                    {showCorrect && <span className="feedback-icon">✓</span>}
-                    {showIncorrect && <span className="feedback-icon">✗</span>}
+                    {showUserCorrect && <span className="feedback-icon">✓</span>}
+                    {showUserIncorrect && <span className="feedback-icon">✗</span>}
                   </button>
                 )
               })}
@@ -264,7 +267,7 @@ export function PracticeMode() {
               {wasCorrect ? (
                 <span>🎉 Correct! Great job!</span>
               ) : (
-                <span>❌ Not quite. The correct answer is: <strong>{currentExercise.correctAnswer}</strong></span>
+                <span>❌ Not quite. Try again next time!</span>
               )}
             </div>
           )}
