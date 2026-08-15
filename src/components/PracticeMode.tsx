@@ -76,7 +76,7 @@ export function PracticeMode() {
   useEffect(() => {
     if (!showFeedback) return
 
-    const delay = wasCorrect ? 3 : 5 // 3s if correct, 5s if wrong
+    const delay = wasCorrect ? 1 : 5 // 1s if correct, 5s if wrong
     setCountdown(delay)
 
     // Countdown timer
