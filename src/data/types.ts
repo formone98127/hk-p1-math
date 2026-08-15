@@ -12,6 +12,69 @@ export type NumberLabMode =
   | 'sub'
   | 'tens'
 
+export type WorldLabMode =
+  | 'length'
+  | 'money'
+  | 'clock'
+  | 'shape2d'
+  | 'shape3d'
+  | 'space'
+
+// Exercise System Types
+export type ExerciseType =
+  | 'multipleChoice'
+  | 'fillBlank'
+  | 'matchPairs'
+  | 'ordering'
+  | 'identify'
+  | 'calculation'
+  | 'wordProblem'
+
+export type Difficulty = 'easy' | 'medium' | 'hard'
+
+export type Exercise = {
+  id: string
+  type: ExerciseType
+  difficulty: Difficulty
+  unitId: string
+  question: string
+  options?: string[]
+  correctAnswer: string | number
+  hint?: string
+  explanation?: string
+  points: number
+}
+
+export type ExerciseSet = {
+  id: string
+  unitId: string
+  title: string
+  description: string
+  exercises: Exercise[]
+  totalPoints: number
+  timeLimit?: number // seconds
+  prerequisites?: string[]
+}
+
+export type UserProgress = {
+  completedExercises: string[]
+  scores: Record<string, number> // exerciseSetId -> percentage
+  streaks: Record<string, number>
+  totalPoints: number
+  lastPractice: string
+  timeSpent: Record<string, number> // unitId -> seconds
+}
+
+export type Achievement = {
+  id: string
+  title: string
+  description: string
+  icon: string
+  requirement: (progress: UserProgress) => boolean
+  points: number
+  unlocked?: boolean
+}
+
 export type NumberLabProps = {
   mode: NumberLabMode
   showAnswer?: boolean
@@ -24,30 +87,16 @@ export type NumberLabProps = {
   onInteractComplete?: () => void
 }
 
-export type WorldLabMode =
-  | 'length'
-  | 'money'
-  | 'clock'
-  | 'shape2d'
-  | 'shape3d'
-  | 'space'
-
 export type WorldLabProps = {
   mode: WorldLabMode
   showAnswer?: boolean
-  /** length: relative sizes 1–5 */
   lenA?: number
   lenB?: number
-  /** money: coin values to show */
   coins?: number[]
   moneyTotal?: number
-  /** clock hour 1–12 */
   hour?: number
-  /** 2d: triangle | square | rectangle | circle | pentagon */
   shape2d?: 'triangle' | 'square' | 'rectangle' | 'circle' | 'pentagon'
-  /** 3d: cube | cylinder | sphere | cone */
   shape3d?: 'cube' | 'cylinder' | 'sphere' | 'cone'
-  /** space: where is the star */
   place?: 'over' | 'under' | 'left' | 'right' | 'inFront' | 'behind'
   answerLabel?: string
 }

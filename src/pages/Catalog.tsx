@@ -148,6 +148,7 @@ export function Catalog() {
         <Link className="hero-cta" to={`/lesson/${heroLessonId}`}>
           {t.heroCta}
         </Link>
+        <Link className="practice-cta" to="/practice">🎯 Practice Zone</Link>
         <p className="source-note">{t.sourceNote}</p>
       </header>
 
