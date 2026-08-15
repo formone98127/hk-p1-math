@@ -17,6 +17,7 @@ export function PracticeMode() {
   const [correctCount, setCorrectCount] = useState(0)
   const [showFeedback, setShowFeedback] = useState(false)
   const [wasCorrect, setWasCorrect] = useState(false)
+  const [countdown, setCountdown] = useState(0)
 
   // Load exercises
   useEffect(() => {
@@ -50,7 +51,6 @@ export function PracticeMode() {
 
   const currentExercise = exercises[currentIndex]
   const isLast = currentIndex === exercises.length - 1
-  const hasAnswered = userAnswers[currentExercise?.id] !== undefined
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -59,7 +59,7 @@ export function PracticeMode() {
   }
 
   const checkAnswer = useCallback(() => {
-    if (!currentExercise || !hasAnswered || !showFeedback) return
+    if (!currentExercise) return
 
     // Reset feedback state for next question
     setShowFeedback(false)
@@ -70,7 +70,36 @@ export function PracticeMode() {
     } else {
       setCurrentIndex((prev) => prev + 1)
     }
-  }, [currentExercise, hasAnswered, showFeedback, isLast])
+  }, [currentExercise, isLast])
+
+  // Auto-advance after feedback based on correctness
+  useEffect(() => {
+    if (!showFeedback) return
+
+    const delay = wasCorrect ? 3 : 5 // 3s if correct, 5s if wrong
+    setCountdown(delay)
+
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    // Auto-advance timer
+    const advanceTimer = setTimeout(() => {
+      checkAnswer()
+    }, delay * 1000)
+
+    return () => {
+      clearTimeout(advanceTimer)
+      clearInterval(countdownInterval)
+    }
+  }, [showFeedback, wasCorrect, checkAnswer])
 
   const handleInputChange = (value: string) => {
     if (currentExercise && !showFeedback) {
@@ -269,6 +298,7 @@ export function PracticeMode() {
               ) : (
                 <span>❌ Not quite. Try again next time!</span>
               )}
+              <span className="countdown">Next in {countdown}s...</span>
             </div>
           )}
 
@@ -286,18 +316,9 @@ export function PracticeMode() {
         </div>
 
         <div className="practice-actions">
-          {!showFeedback ? (
-            <>
-              <button className="btn-skip" onClick={handleSkip}>
-                Skip →
-              </button>
-            </>
-          ) : (
-            <button
-              className="btn-primary"
-              onClick={checkAnswer}
-            >
-              {isLast ? 'See Results' : 'Next →'}
+          {!showFeedback && (
+            <button className="btn-skip" onClick={handleSkip}>
+              Skip →
             </button>
           )}
         </div>

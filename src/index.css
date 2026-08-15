@@ -1033,6 +1033,9 @@ a.primary {
   text-align: center;
   font-weight: 600;
   animation: feedback-in 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .feedback-message.correct {
@@ -1045,6 +1048,13 @@ a.primary {
   background: rgba(255, 107, 122, 0.15);
   border: 1px solid rgba(255, 107, 122, 0.4);
   color: #ff6b7a;
+}
+
+.countdown {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  font-weight: 500;
+  font-style: italic;
 }
 
 @keyframes feedback-in {
