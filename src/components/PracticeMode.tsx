@@ -144,8 +144,10 @@ export function PracticeMode() {
 
   // Load exercises, restoring an in-progress session when one exists
   useEffect(() => {
+    if (!setId) return
+
     if (setId === 'quick') {
-      // Generate fresh quick practice exercises each time
+      // Legacy quick practice: 5 fresh mixed questions every visit
       setExercises(generateNewQuickPractice(5))
       setCurrentIndex(0)
       setUserAnswers({})
@@ -155,7 +157,6 @@ export function PracticeMode() {
       setTimeRemaining(null)
       return
     }
-    if (!setId) return
 
     const saved = loadSession()
     if (
@@ -182,6 +183,13 @@ export function PracticeMode() {
     setCorrectCount(0)
     setStreak(0)
     setShowResults(false)
+
+    if (setId === 'mix') {
+      // 20 random questions across all units at the chosen level
+      setExercises(generateNewQuickPractice(20, difficulty))
+      setTimeRemaining(null)
+      return
+    }
 
     // Static sets (backward compatibility)
     const staticSet = allExerciseSets.find((s) => s.id === setId)

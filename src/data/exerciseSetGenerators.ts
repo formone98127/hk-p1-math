@@ -286,15 +286,22 @@ export function generateExerciseSet(config: GeneratorConfig, seed: string, targe
     uniqueExercises.push(ex)
   }
 
-  // Small pools (clocks, shapes) can't fill the requested size with unique
-  // questions, so cycle through the pool again with re-shuffled options.
+  // Size the set to the requested count: trim when the pool is bigger,
+  // and cycle through the pool with re-shuffled options when it's smaller
+  // (clocks, shapes, etc. can't fill the request with unique questions).
   const goal = targetCount ?? exercises.length
-  const finalExercises: Exercise[] = [...uniqueExercises]
-  let repeat = 0
-  while (finalExercises.length < goal && uniqueExercises.length > 0) {
-    repeat++
-    const base = uniqueExercises[(repeat - 1) % uniqueExercises.length]
-    finalExercises.push(cloneWithShuffledOptions(base, repeat))
+  let finalExercises: Exercise[]
+  if (uniqueExercises.length >= goal) {
+    // Random spread rather than a prefix so repeated sessions vary
+    finalExercises = uniqueExercises.sort(() => Math.random() - 0.5).slice(0, goal)
+  } else {
+    finalExercises = [...uniqueExercises]
+    let repeat = 0
+    while (finalExercises.length < goal && uniqueExercises.length > 0) {
+      repeat++
+      const base = uniqueExercises[(repeat - 1) % uniqueExercises.length]
+      finalExercises.push(cloneWithShuffledOptions(base, repeat))
+    }
   }
 
   return exerciseSet(
@@ -332,9 +339,27 @@ export function generateExerciseSetForUnit(unitId: string, count: number = 50, d
   return generateExerciseSet(scaledConfig, seed, count)
 }
 
-// Generate quick practice with mixed units
-export function generateQuickPractice(count: number = 5, units?: string[]): Exercise[] {
-  const targetUnits = units || Object.keys(UNIT_GENERATORS)
+// Does this unit have generators at the given difficulty?
+export function unitHasDifficulty(unitId: string, difficulty?: Difficulty): boolean {
+  const config = UNIT_GENERATORS[unitId]
+  if (!config) return false
+  if (!difficulty) return true
+  return config.generators.some((g) => g.difficulty === difficulty)
+}
+
+// Generate mixed practice drawn from all (or selected) units, optionally
+// restricted to a single difficulty level.
+export function generateQuickPractice(count: number = 5, difficulty?: Difficulty, units?: string[]): Exercise[] {
+  let targetUnits = (units || Object.keys(UNIT_GENERATORS)).filter((u) => unitHasDifficulty(u, difficulty))
+
+  // If no unit offers that level, fall back to an unfiltered mix
+  if (targetUnits.length === 0) {
+    targetUnits = units || Object.keys(UNIT_GENERATORS)
+  }
+
+  // Rotate which units lead each session so every unit gets fair coverage
+  targetUnits = targetUnits.sort(() => Math.random() - 0.5)
+
   const exercises: Exercise[] = []
 
   // Distribute across requested units
@@ -344,7 +369,7 @@ export function generateQuickPractice(count: number = 5, units?: string[]): Exer
     if (exercises.length >= count) break
 
     try {
-      const set = generateExerciseSetForUnit(unitId, Math.min(perUnit, count - exercises.length))
+      const set = generateExerciseSetForUnit(unitId, Math.min(perUnit, count - exercises.length), difficulty)
       exercises.push(...set.exercises.slice(0, count - exercises.length))
     } catch (error) {
       console.warn(`Could not generate exercises for unit: ${unitId}`, error)

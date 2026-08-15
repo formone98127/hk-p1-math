@@ -151,22 +151,36 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
       <section className="hub-section">
         <h2 className="hub-strand-title">
           <span className="strand-icon">🎲</span>
-          Quick Practice
+          Mix Practice
         </h2>
         <div className="hub-grid">
-          <Link className="hub-card hub-card-featured" to="/practice/quick">
-            <div className="hub-card-header">
-              <span className="hub-unit-code">MIX</span>
-              <span className="hub-exercise-count">5 random</span>
+          <div className="hub-card hub-card-featured hub-card-selectable">
+            <Link className="hub-card-main" to="/practice/mix">
+              <div className="hub-card-header">
+                <span className="hub-unit-code">MIX</span>
+                <span className="hub-exercise-count">20 random</span>
+              </div>
+              <h3 className="hub-card-title">Mix Practice</h3>
+              <p className="hub-card-desc">
+                Test your skills with 20 random questions from every unit!
+              </p>
+              <div className="hub-card-meta">
+                <span className="hub-points">⭐ Variable</span>
+              </div>
+            </Link>
+            <div className="hub-difficulty">
+              <span className="hub-difficulty-label">Level</span>
+              {(['easy', 'medium', 'hard'] as const).map((level) => (
+                <Link
+                  key={level}
+                  className="hub-difficulty-btn"
+                  to={`/practice/mix?difficulty=${level}`}
+                >
+                  {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
+                </Link>
+              ))}
             </div>
-            <h3 className="hub-card-title">Quick Challenge</h3>
-            <p className="hub-card-desc">
-              Test your skills with 5 random exercises from any unit!
-            </p>
-            <div className="hub-card-meta">
-              <span className="hub-points">⭐ Variable</span>
-            </div>
-          </Link>
+          </div>
         </div>
       </section>
     </div>

@@ -67,6 +67,23 @@ describe('generated question database', () => {
     expect(new Set(quick.map((e) => e.id)).size).toBe(5)
   })
 
+  it('mix practice returns 20 questions across units, filterable by difficulty', () => {
+    const mixed = generateQuickPractice(20)
+    expect(mixed.length).toBe(20)
+    expect(new Set(mixed.map((e) => e.id)).size).toBe(20)
+    // Every exercise keeps its unit id prefix so the mix really spans units
+    const units = new Set(mixed.map((e) => e.id.split('-')[0]))
+    expect(units.size).toBeGreaterThanOrEqual(3)
+
+    const easy = generateQuickPractice(20, 'easy')
+    expect(easy.length).toBe(20)
+    expect(easy.every((ex) => ex.difficulty === 'easy')).toBe(true)
+
+    const hard = generateQuickPractice(20, 'hard')
+    expect(hard.length).toBe(20)
+    expect(hard.every((ex) => ex.difficulty === 'hard')).toBe(true)
+  })
+
   it('capacity estimates stay above the 1000+ total', () => {
     const total = getTotalQuestionCapacity()
     expect(total).toBeGreaterThanOrEqual(1000)
