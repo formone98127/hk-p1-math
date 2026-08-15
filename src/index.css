@@ -986,9 +986,13 @@ a.primary {
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 
-.option-btn:hover {
+.option-btn:hover:not(.disabled) {
   background: rgba(255, 209, 102, 0.08);
   border-color: var(--accent);
 }
@@ -997,6 +1001,61 @@ a.primary {
   background: rgba(255, 209, 102, 0.15);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.option-btn.correct {
+  background: rgba(184, 242, 124, 0.2);
+  border-color: var(--op);
+  color: #0c1210;
+}
+
+.option-btn.incorrect {
+  background: rgba(255, 107, 122, 0.2);
+  border-color: #ff6b7a;
+  color: #1a1400;
+}
+
+.option-btn.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.feedback-icon {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.feedback-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  animation: feedback-in 0.3s ease;
+}
+
+.feedback-message.correct {
+  background: rgba(184, 242, 124, 0.15);
+  border: 1px solid rgba(184, 242, 124, 0.4);
+  color: var(--op);
+}
+
+.feedback-message.incorrect {
+  background: rgba(255, 107, 122, 0.15);
+  border: 1px solid rgba(255, 107, 122, 0.4);
+  color: #ff6b7a;
+}
+
+@keyframes feedback-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .text-input-area {

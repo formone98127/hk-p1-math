@@ -15,6 +15,8 @@ export function PracticeMode() {
   const [streak, setStreak] = useState(0)
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
   const [correctCount, setCorrectCount] = useState(0)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [wasCorrect, setWasCorrect] = useState(false)
 
   // Load exercises
   useEffect(() => {
@@ -40,6 +42,12 @@ export function PracticeMode() {
     return () => clearInterval(timer)
   }, [timeRemaining, showResults])
 
+  // Reset feedback when changing exercises
+  useEffect(() => {
+    setShowFeedback(false)
+    setWasCorrect(false)
+  }, [currentIndex])
+
   const currentExercise = exercises[currentIndex]
   const isLast = currentIndex === exercises.length - 1
   const hasAnswered = userAnswers[currentExercise?.id] !== undefined
@@ -51,28 +59,34 @@ export function PracticeMode() {
   }
 
   const checkAnswer = useCallback(() => {
-    if (!currentExercise || !hasAnswered) return
+    if (!currentExercise || !hasAnswered || !showFeedback) return
 
-    const userAnswer = userAnswers[currentExercise.id]
-    const correct = String(userAnswer) === String(currentExercise.correctAnswer)
-
-    if (correct) {
-      setCorrectCount((prev) => prev + 1)
-      setStreak((prev) => prev + 1)
-    } else {
-      setStreak(0)
-    }
+    // Reset feedback state for next question
+    setShowFeedback(false)
+    setWasCorrect(false)
 
     if (isLast) {
       setShowResults(true)
     } else {
       setCurrentIndex((prev) => prev + 1)
     }
-  }, [currentExercise, hasAnswered, userAnswers, isLast])
+  }, [currentExercise, hasAnswered, showFeedback, isLast])
 
   const handleInputChange = (value: string) => {
-    if (currentExercise) {
+    if (currentExercise && !showFeedback) {
       setUserAnswers((prev) => ({ ...prev, [currentExercise.id]: value }))
+
+      const correct = String(value) === String(currentExercise.correctAnswer)
+      setWasCorrect(correct)
+
+      if (correct) {
+        setCorrectCount((prev) => prev + 1)
+        setStreak((prev) => prev + 1)
+      } else {
+        setStreak(0)
+      }
+
+      setShowFeedback(true)
     }
   }
 
@@ -214,15 +228,30 @@ export function PracticeMode() {
 
           {currentExercise.options && currentExercise.options.length > 0 ? (
             <div className="multiple-choice-options">
-              {currentExercise.options.map((option, idx) => (
-                <button
-                  key={idx}
-                  className={`option-btn ${userAnswers[currentExercise.id] === option ? 'selected' : ''}`}
-                  onClick={() => handleInputChange(option)}
-                >
-                  {option}
-                </button>
-              ))}
+              {currentExercise.options.map((option, idx) => {
+                const isSelected = userAnswers[currentExercise.id] === option
+                const isCorrect = String(option) === String(currentExercise.correctAnswer)
+                const showCorrect = showFeedback && isCorrect
+                const showIncorrect = showFeedback && isSelected && !isCorrect
+
+                return (
+                  <button
+                    key={idx}
+                    className={`option-btn
+                      ${isSelected ? 'selected' : ''}
+                      ${showCorrect ? 'correct' : ''}
+                      ${showIncorrect ? 'incorrect' : ''}
+                      ${showFeedback ? 'disabled' : ''}
+                    `}
+                    onClick={() => handleInputChange(option)}
+                    disabled={showFeedback}
+                  >
+                    {option}
+                    {showCorrect && <span className="feedback-icon">✓</span>}
+                    {showIncorrect && <span className="feedback-icon">✗</span>}
+                  </button>
+                )
+              })}
             </div>
           ) : (
             <div className="no-options-error">
@@ -230,7 +259,17 @@ export function PracticeMode() {
             </div>
           )}
 
-          {currentExercise.hint && (
+          {showFeedback && (
+            <div className={`feedback-message ${wasCorrect ? 'correct' : 'incorrect'}`}>
+              {wasCorrect ? (
+                <span>🎉 Correct! Great job!</span>
+              ) : (
+                <span>❌ Not quite. The correct answer is: <strong>{currentExercise.correctAnswer}</strong></span>
+              )}
+            </div>
+          )}
+
+          {currentExercise.hint && !showFeedback && (
             <button
               className="hint-toggle"
               onClick={() => document.querySelector('.hint-text')?.classList.toggle('visible')}
@@ -238,22 +277,26 @@ export function PracticeMode() {
               💡 Need a hint?
             </button>
           )}
-          {currentExercise.hint && (
+          {currentExercise.hint && !showFeedback && (
             <p className="hint-text">{currentExercise.hint}</p>
           )}
         </div>
 
         <div className="practice-actions">
-          <button className="btn-skip" onClick={handleSkip}>
-            Skip →
-          </button>
-          <button
-            className="btn-primary"
-            onClick={checkAnswer}
-            disabled={!hasAnswered}
-          >
-            {isLast ? 'Finish' : 'Next →'}
-          </button>
+          {!showFeedback ? (
+            <>
+              <button className="btn-skip" onClick={handleSkip}>
+                Skip →
+              </button>
+            </>
+          ) : (
+            <button
+              className="btn-primary"
+              onClick={checkAnswer}
+            >
+              {isLast ? 'See Results' : 'Next →'}
+            </button>
+          )}
         </div>
       </main>
     </div>
