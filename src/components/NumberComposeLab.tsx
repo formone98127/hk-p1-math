@@ -262,6 +262,7 @@ export function NumberComposeLab({
       <svg
         className="number-svg"
         viewBox="0 0 380 320"
+        preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label="Numbers to 20 lab"
       >

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { nextLessonId } from '../data/p1Catalog'
 import type { Lesson, NumberLabProps, WorldLabProps } from '../data/types'
 import { useI18n } from '../i18n/I18nProvider'
@@ -11,6 +11,7 @@ type Props = { lesson: Lesson }
 
 export function LessonPlayer({ lesson }: Props) {
   const { t } = useI18n()
+  const navigate = useNavigate()
   const [i, setI] = useState(0)
   const [gateOk, setGateOk] = useState(false)
   const touchY = useRef<number | null>(null)
@@ -20,9 +21,18 @@ export function LessonPlayer({ lesson }: Props) {
   const progress = done ? 1 : (i + 1) / lesson.beats.length
   const gated = beat?.gate === 'interact' && !gateOk
   const nextId = nextLessonId(lesson.id)
+  const doneRef = useRef(done)
+  const nextIdRef = useRef(nextId)
+  doneRef.current = done
+  nextIdRef.current = nextId
 
   const go = useCallback(
     (delta: number) => {
+      if (delta > 0 && doneRef.current) {
+        const id = nextIdRef.current
+        navigate(id ? `/lesson/${id}` : '/')
+        return
+      }
       setI((cur) => {
         const b = lesson.beats[cur]
         if (delta > 0 && b?.gate === 'interact' && !gateOk) return cur
@@ -32,7 +42,7 @@ export function LessonPlayer({ lesson }: Props) {
         return next
       })
     },
-    [lesson.beats, gateOk],
+    [lesson.beats, gateOk, navigate],
   )
 
   useEffect(() => {
@@ -43,6 +53,32 @@ export function LessonPlayer({ lesson }: Props) {
   useEffect(() => {
     setGateOk(false)
   }, [i])
+
+  useEffect(() => {
+    const prevHtml = document.documentElement.style.overflow
+    const prevBody = document.body.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden'
+
+    const syncH = () => {
+      const h = window.visualViewport?.height ?? window.innerHeight
+      document.documentElement.style.setProperty('--app-h', `${h}px`)
+      window.scrollTo(0, 0)
+    }
+    syncH()
+    window.visualViewport?.addEventListener('resize', syncH)
+    window.visualViewport?.addEventListener('scroll', syncH)
+    window.addEventListener('resize', syncH)
+
+    return () => {
+      document.documentElement.style.overflow = prevHtml
+      document.body.style.overflow = prevBody
+      document.documentElement.style.removeProperty('--app-h')
+      window.visualViewport?.removeEventListener('resize', syncH)
+      window.visualViewport?.removeEventListener('scroll', syncH)
+      window.removeEventListener('resize', syncH)
+    }
+  }, [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -58,15 +94,27 @@ export function LessonPlayer({ lesson }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [go])
 
-  const onWheel = (e: React.WheelEvent) => {
-    if (wheelLock.current) return
-    if (Math.abs(e.deltaY) < 8) return
-    wheelLock.current = true
-    go(e.deltaY > 0 ? 1 : -1)
-    window.setTimeout(() => {
-      wheelLock.current = false
-    }, 380)
-  }
+  useEffect(() => {
+    const blockTouch = (e: TouchEvent) => {
+      e.preventDefault()
+    }
+    const onWheelNative = (e: WheelEvent) => {
+      e.preventDefault()
+      if (wheelLock.current) return
+      if (Math.abs(e.deltaY) < 8) return
+      wheelLock.current = true
+      go(e.deltaY > 0 ? 1 : -1)
+      window.setTimeout(() => {
+        wheelLock.current = false
+      }, 380)
+    }
+    document.addEventListener('touchmove', blockTouch, { passive: false })
+    document.addEventListener('wheel', onWheelNative, { passive: false })
+    return () => {
+      document.removeEventListener('touchmove', blockTouch)
+      document.removeEventListener('wheel', onWheelNative)
+    }
+  }, [go])
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchY.current = e.touches[0].clientY
@@ -96,7 +144,6 @@ export function LessonPlayer({ lesson }: Props) {
   return (
     <div
       className="player"
-      onWheel={onWheel}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
