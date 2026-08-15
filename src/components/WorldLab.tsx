@@ -32,7 +32,12 @@ export function WorldLab({
 
   return (
     <div className={`world-lab mode-${mode} ${showAnswer ? 'has-answer' : 'is-question'}`}>
-      <svg className="world-svg" viewBox="0 0 380 300" role="img">
+      <svg
+        className="world-svg"
+        viewBox="0 0 380 300"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+      >
         {mode === 'length' && (
           <g>
             <rect
