@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { allExerciseSets } from '../data/exercises'
 import { getGeneratableUnitIds, getUnitGeneratorConfig, estimateUnitQuestionCapacity, getTotalQuestionCapacity } from '../data/exerciseSetGenerators'
+import { LangSwitch } from './LangSwitch'
+import { useI18n } from '../i18n/I18nProvider'
 import type { Strand } from '../data/types'
 
 const strandLabels: Record<Strand, string> = {
@@ -37,6 +39,8 @@ export interface ExerciseHubProps {
 }
 
 export function ExerciseHub({ onBack }: ExerciseHubProps) {
+  const { t } = useI18n()
+
   // Group by strand
   const byStrand = allExerciseSets.reduce((acc, set) => {
     const unit = set.unitId
@@ -56,12 +60,13 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
     <div className="exercise-hub">
       <header className="hub-header">
         <button className="back-btn" onClick={onBack}>
-          ← Back
+          ← {t.catalog}
         </button>
-        <h1>🎯 Practice Zone</h1>
-        <p>Choose a unit to practice and earn achievements!</p>
+        <LangSwitch />
+        <h1>{t.practiceTitle}</h1>
+        <p>{t.practiceSub}</p>
         <p className="hub-total">
-          🎲 {getTotalQuestionCapacity().toLocaleString()}+ unique questions — fresh every session
+          {t.uniqueTotal.replace('{n}', getTotalQuestionCapacity().toLocaleString())}
         </p>
       </header>
 
@@ -69,32 +74,32 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
       <section className="hub-section">
         <h2 className="hub-strand-title">
           <span className="strand-icon">🎲</span>
-          Mix Practice
+          {t.mixSection}
         </h2>
         <div className="hub-grid">
           <div className="hub-card hub-card-featured hub-card-selectable">
             <Link className="hub-card-main" to="/practice/mix">
               <div className="hub-card-header">
                 <span className="hub-unit-code">MIX</span>
-                <span className="hub-exercise-count">20 random</span>
+                <span className="hub-exercise-count">{t.mixCount}</span>
               </div>
-              <h3 className="hub-card-title">Mix Practice</h3>
+              <h3 className="hub-card-title">{t.mixTitle}</h3>
               <p className="hub-card-desc">
-                Test your skills with 20 random questions from every unit!
+                {t.mixDesc}
               </p>
               <div className="hub-card-meta">
-                <span className="hub-points">⭐ Variable</span>
+                <span className="hub-points">{t.pts.replace('{n}', 'Variable')}</span>
               </div>
             </Link>
             <div className="hub-difficulty">
-              <span className="hub-difficulty-label">Level</span>
+              <span className="hub-difficulty-label">{t.level}</span>
               {(['easy', 'medium', 'hard'] as const).map((level) => (
                 <Link
                   key={level}
                   className="hub-difficulty-btn"
                   to={`/practice/mix?difficulty=${level}`}
                 >
-                  {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
+                  {level === 'easy' ? t.easyLabel : level === 'medium' ? t.mediumLabel : t.hardLabel}
                 </Link>
               ))}
             </div>
@@ -110,7 +115,9 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
           <section key={strand} className="hub-section">
             <h2 className="hub-strand-title">
               <span className="strand-icon">{strandIcons[strand]}</span>
-              {strandLabels[strand]}
+              {strand === 'number' ? t.strandNumber :
+               strand === 'measures' ? t.strandMeasures :
+               strand === 'shape' ? t.strandShape : t.strandInquiry}
             </h2>
             <div className="hub-grid">
               {sets.map((set) => {
@@ -123,10 +130,10 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
                 // like clocks or shapes show their real size, not '50+')
                 const displayCount = hasGenerator
                   ? capacity >= 50
-                    ? '50+'
-                    : `~${capacity}`
-                  : set.exercises.length
-                const displayPoints = hasGenerator ? 'Variable' : set.totalPoints
+                    ? t.exercisesCount.replace('{n}', '50+')
+                    : t.exercisesCount.replace('{n}', `~${capacity}`)
+                  : t.exercisesCount.replace('{n}', set.exercises.length.toString())
+                const displayPoints = hasGenerator ? t.pts.replace('{n}', 'Variable') : t.pts.replace('{n}', set.totalPoints.toString())
 
                 return (
                   <div
@@ -139,40 +146,40 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
                           {unitLabels[unitId] || unitId.toUpperCase()}
                         </span>
                         <span className="hub-exercise-count">
-                          {displayCount} exercises {hasGenerator && '🔄'}
+                          {displayCount} {hasGenerator && '🔄'}
                         </span>
                       </div>
                       <h3 className="hub-card-title">{set.title}</h3>
                       <p className="hub-card-desc">{set.description}</p>
                       <div className="hub-card-meta">
-                        <span className="hub-points">⭐ {displayPoints} pts</span>
+                        <span className="hub-points">{displayPoints}</span>
                         {hasGenerator && capacity > 0 && (
                           <span className="hub-capacity" title={`~${capacity.toLocaleString()} unique combinations`}>
-                            🎲 ~{capacity.toLocaleString()} variations
+                            {t.variations.replace('{n}', capacity.toLocaleString())}
                           </span>
                         )}
                         {generatorConfig?.timeLimit && (
                           <span className="hub-time">
-                            ⏱️ {Math.ceil(generatorConfig.timeLimit / 60)}m
+                            {t.timeMin.replace('{n}', Math.ceil(generatorConfig.timeLimit / 60).toString())}
                           </span>
                         )}
                       </div>
                       {hasGenerator && (
                         <div className="hub-fresh-badge">
-                          🔄 Fresh questions each time!
+                          {t.freshBadge}
                         </div>
                       )}
                     </Link>
                     {hasGenerator && (
                       <div className="hub-difficulty">
-                        <span className="hub-difficulty-label">Level</span>
+                        <span className="hub-difficulty-label">{t.level}</span>
                         {(['easy', 'medium', 'hard'] as const).map((level) => (
                           <Link
                             key={level}
                             className="hub-difficulty-btn"
                             to={`/practice/${unitId}-generated?difficulty=${level}`}
                           >
-                            {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
+                            {level === 'easy' ? t.easyLabel : level === 'medium' ? t.mediumLabel : t.hardLabel}
                           </Link>
                         ))}
                       </div>
@@ -184,42 +191,6 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
           </section>
         )
       })}
-
-      <section className="hub-section">
-        <h2 className="hub-strand-title">
-          <span className="strand-icon">🎲</span>
-          Mix Practice
-        </h2>
-        <div className="hub-grid">
-          <div className="hub-card hub-card-featured hub-card-selectable">
-            <Link className="hub-card-main" to="/practice/mix">
-              <div className="hub-card-header">
-                <span className="hub-unit-code">MIX</span>
-                <span className="hub-exercise-count">20 random</span>
-              </div>
-              <h3 className="hub-card-title">Mix Practice</h3>
-              <p className="hub-card-desc">
-                Test your skills with 20 random questions from every unit!
-              </p>
-              <div className="hub-card-meta">
-                <span className="hub-points">⭐ Variable</span>
-              </div>
-            </Link>
-            <div className="hub-difficulty">
-              <span className="hub-difficulty-label">Level</span>
-              {(['easy', 'medium', 'hard'] as const).map((level) => (
-                <Link
-                  key={level}
-                  className="hub-difficulty-btn"
-                  to={`/practice/mix?difficulty=${level}`}
-                >
-                  {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
