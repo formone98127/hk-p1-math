@@ -5,7 +5,6 @@ import { generateExerciseSetForUnit, generateQuickPractice as generateNewQuickPr
 import type { Difficulty, Exercise } from '../data/types'
 import { checkAchievements } from '../data/achievements'
 import { useI18n } from '../i18n/I18nProvider'
-import { LangSwitch } from './LangSwitch'
 
 // In-progress sessions are saved so a reload resumes where the kid left off
 const STORAGE_KEY = 'hk-p1-practice-session'
@@ -514,7 +513,6 @@ export function PracticeMode() {
         <Link to="/practice" className="back-link" onClick={clearSession}>
           {t.exit}
         </Link>
-        <LangSwitch />
         <div className="practice-progress">
           <span>
             {t.questionOf.replace('{a}', (currentIndex + 1).toString()).replace('{b}', exercises.length.toString())}

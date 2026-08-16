@@ -996,12 +996,6 @@ a.primary {
   font-weight: 600;
 }
 
-.practice-header .lang-switch {
-  position: absolute;
-  right: 1.25rem;
-  top: 1.5rem;
-}
-
 .practice-progress {
   display: flex;
   gap: 1.5rem;
