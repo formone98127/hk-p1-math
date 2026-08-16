@@ -40,7 +40,7 @@ function clearSession(): void {
 }
 
 export function PracticeMode() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const { setId } = useParams<{ setId?: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -151,7 +151,7 @@ export function PracticeMode() {
 
     if (setId === 'quick') {
       // Legacy quick practice: 5 fresh mixed questions every visit
-      setExercises(generateNewQuickPractice(5))
+      setExercises(generateNewQuickPractice(5, difficulty, undefined, locale === 'zh-Hant' ? 'zh-Hant' : 'en'))
       setCurrentIndex(0)
       setUserAnswers({})
       setCorrectCount(0)
@@ -189,7 +189,7 @@ export function PracticeMode() {
 
     if (setId === 'mix') {
       // 20 random questions across all units at the chosen level
-      setExercises(generateNewQuickPractice(20, difficulty))
+      setExercises(generateNewQuickPractice(20, difficulty, undefined, locale === 'zh-Hant' ? 'zh-Hant' : 'en'))
       setTimeRemaining(null)
       return
     }
@@ -206,7 +206,7 @@ export function PracticeMode() {
     try {
       const unitId = setId.split('-')[0]
       if (getGeneratableUnitIds().includes(unitId)) {
-        const generatedSet = generateExerciseSetForUnit(unitId, 50, difficulty)
+        const generatedSet = generateExerciseSetForUnit(unitId, 50, difficulty, locale === 'zh-Hant' ? 'zh-Hant' : 'en')
         setExercises(generatedSet.exercises)
         setTimeRemaining(generatedSet.timeLimit ?? null)
       } else {
@@ -217,7 +217,7 @@ export function PracticeMode() {
       console.error('Error generating exercises:', error)
       setExercises([])
     }
-  }, [setId, difficulty])
+  }, [setId, difficulty, locale])
 
   // Persist the in-progress session so a reload resumes where the kid left off
   useEffect(() => {

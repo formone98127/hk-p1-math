@@ -39,7 +39,7 @@ export interface ExerciseHubProps {
 }
 
 export function ExerciseHub({ onBack }: ExerciseHubProps) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
 
   // Group by strand
   const byStrand = allExerciseSets.reduce((acc, set) => {
@@ -125,6 +125,14 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
                 const hasGenerator = getGeneratableUnitIds().includes(unitId)
                 const generatorConfig = hasGenerator ? getUnitGeneratorConfig(unitId) : undefined
                 const capacity = hasGenerator ? estimateUnitQuestionCapacity(unitId) : 0
+
+                // For generated units, use localized titles from generator config
+                const cardTitle = hasGenerator && generatorConfig
+                  ? (locale === 'zh-Hant' ? (generatorConfig.titleZh ?? generatorConfig.title) : generatorConfig.title)
+                  : set.title
+                const cardDesc = hasGenerator && generatorConfig
+                  ? (locale === 'zh-Hant' ? (generatorConfig.descriptionZh ?? generatorConfig.description) : generatorConfig.description)
+                  : set.description
 
                 // For generated units, show dynamic capacity (small pools
                 // like clocks or shapes show their real size, not '50+')
