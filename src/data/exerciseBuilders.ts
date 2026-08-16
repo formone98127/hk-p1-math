@@ -1,4 +1,5 @@
 import type { Exercise, ExerciseSet, ExerciseType, Difficulty } from './types'
+import type { Locale } from '../i18n/locale'
 
 // Exercise builder functions
 export function exercise(
@@ -37,6 +38,7 @@ export function multipleChoice(
   difficulty: Difficulty = 'easy',
   hint?: string,
   explanation?: string,
+  locale: Locale = 'en',
 ): Exercise {
   // Deduplicate wrong answers against the correct answer and each other
   // (generators sometimes produce overlapping distractors), then top up
@@ -51,7 +53,22 @@ export function multipleChoice(
     wrongs.push(key)
     if (wrongs.length >= 3) break
   }
-  const fallbacks = ['0', '1', '2', '3', '5', '10', 'yes', 'no', 'maybe', 'same']
+  // Top up with distractors derived from the correct answer (numeric first,
+  // then generic words) so a pad never looks like a random '0' or '1'.
+  const num = Number(correctStr)
+  if (!isNaN(num)) {
+    for (const offset of [1, 2, 3, -1, -2, 5]) {
+      if (wrongs.length >= 3) break
+      const candidate = String(Math.max(0, num + offset))
+      if (seen.has(candidate)) continue
+      seen.add(candidate)
+      wrongs.push(candidate)
+    }
+  }
+  const fallbacks =
+    locale === 'zh-Hant'
+      ? ['是', '否', '或者', '一樣', '不知道']
+      : ['yes', 'no', 'maybe', 'same', "don't know"]
   for (const fallback of fallbacks) {
     if (wrongs.length >= 3) break
     if (seen.has(fallback)) continue

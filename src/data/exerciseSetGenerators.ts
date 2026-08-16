@@ -1,6 +1,7 @@
 import type { Exercise, ExerciseSet, Difficulty } from './types'
 import { exerciseSet } from './exerciseBuilders'
 import * as generators from './questionGenerators'
+import type { Locale } from '../i18n/locale'
 
 // Generator function type - more flexible to match actual generator signatures
 type GeneratorFunction = (...args: any[]) => Generator<Exercise>
@@ -9,6 +10,9 @@ interface GeneratorConfig {
   unitId: string
   title: string
   description: string
+  titleZh?: string // Traditional Chinese card title
+  descriptionZh?: string // Traditional Chinese card description
+  locale?: Locale
   generators: Array<{
     generator: GeneratorFunction
     count: number
@@ -48,6 +52,8 @@ const config1N1: GeneratorConfig = {
   unitId: '1n1',
   title: 'Numbers to 20 Practice',
   description: 'Master counting, comparing, odd/even, and splitting numbers',
+  titleZh: '20以內的數 練習',
+  descriptionZh: '掌握數數、比較、單雙數和拆分數',
   generators: [
     { generator: generators.generateCountingExercises, count: 25, difficulty: 'easy' },
     { generator: generators.generateNumberSequenceExercises, count: 15, difficulty: 'easy' },
@@ -63,6 +69,8 @@ const config1N2: GeneratorConfig = {
   unitId: '1n2',
   title: 'Basic + and − Practice',
   description: 'Learn to add, subtract, and understand zero',
+  titleZh: '基本加法和減法 練習',
+  descriptionZh: '學習加減法和認識零',
   generators: [
     { generator: generators.generateAdditionExercises, count: 20, difficulty: 'easy', params: { maxSum: 10 } },
     { generator: generators.generateSubtractionExercises, count: 20, difficulty: 'easy', params: { maxMinuend: 10 } },
@@ -79,6 +87,8 @@ const config1N3: GeneratorConfig = {
   unitId: '1n3',
   title: 'Numbers to 100 Challenge',
   description: 'Tens, ones, skip counting, and estimation',
+  titleZh: '100以內的數 挑戰',
+  descriptionZh: '十位個位、跳數和估算',
   generators: [
     { generator: generators.generateSkipCountingExercises, count: 12, difficulty: 'easy', params: { step: 10 } },
     { generator: generators.generateSkipCountingExercises, count: 12, difficulty: 'easy', params: { step: 5 } },
@@ -95,6 +105,8 @@ const config1N4: GeneratorConfig = {
   unitId: '1n4',
   title: 'Bigger + and − Practice',
   description: 'Two-digit operations and checking your work',
+  titleZh: '進階加法和減法 練習',
+  descriptionZh: '兩位數加減和驗算',
   generators: [
     { generator: generators.generateAdditionExercises, count: 25, difficulty: 'medium', params: { maxSum: 100 } },
     { generator: generators.generateSubtractionExercises, count: 25, difficulty: 'medium', params: { maxMinuend: 100 } },
@@ -109,6 +121,8 @@ const config1M1: GeneratorConfig = {
   unitId: '1m1',
   title: 'Length Comparison',
   description: 'Comparing objects directly and intuitively',
+  titleZh: '長度比較',
+  descriptionZh: '直接直觀地比較物件',
   generators: [
     { generator: generators.generateComparisonExercises, count: 25, difficulty: 'easy', params: { maxNumber: 20 } },
     { generator: generators.generateWordProblems, count: 20, difficulty: 'medium' },
@@ -121,6 +135,8 @@ const config1M2: GeneratorConfig = {
   unitId: '1m2',
   title: 'Hong Kong Coins',
   description: 'Counting coins and making amounts',
+  titleZh: '香港硬幣',
+  descriptionZh: '數硬幣和計算金額',
   generators: [
     { generator: generators.generateCoinCountingExercises, count: 30, difficulty: 'easy' },
     { generator: generators.generateCoinCountingExercises, count: 25, difficulty: 'medium' },
@@ -134,6 +150,8 @@ const config1M3: GeneratorConfig = {
   unitId: '1m3',
   title: 'Measuring with cm',
   description: 'Use ruler, estimate, compare lengths',
+  titleZh: '用厘米量度',
+  descriptionZh: '用間尺量度、估算和比較長度',
   generators: [
     { generator: generators.generateComparisonExercises, count: 25, difficulty: 'medium', params: { maxNumber: 100 } },
     { generator: generators.generateWordProblems, count: 20, difficulty: 'medium' },
@@ -146,6 +164,8 @@ const config1M4: GeneratorConfig = {
   unitId: '1m4',
   title: 'Reading Clocks',
   description: "O'clock, half-past, days, months",
+  titleZh: '閱讀時鐘',
+  descriptionZh: '整點、半時、星期和月份',
   generators: [
     { generator: generators.generateClockExercises, count: 30, difficulty: 'easy' },
     { generator: generators.generateClockExercises, count: 20, difficulty: 'medium' },
@@ -159,6 +179,8 @@ const config1S1: GeneratorConfig = {
   unitId: '1s1',
   title: '3-D Shapes',
   description: 'Identify cubes, cylinders, spheres, cones',
+  titleZh: '立體圖形',
+  descriptionZh: '認識立方體、圓柱體、球體和圓錐體',
   generators: [
     { generator: generators.generateShape3DExercises, count: 25, difficulty: 'easy' },
     { generator: generators.generateShape3DExercises, count: 25, difficulty: 'medium' },
@@ -172,6 +194,8 @@ const config1S2: GeneratorConfig = {
   unitId: '1s2',
   title: '2-D Shapes',
   description: 'Triangles, squares, rectangles, circles',
+  titleZh: '平面圖形',
+  descriptionZh: '三角形、正方形、長方形和圓形',
   generators: [
     { generator: generators.generateShape2DExercises, count: 30, difficulty: 'easy' },
     { generator: generators.generateShape2DExercises, count: 25, difficulty: 'medium' },
@@ -184,6 +208,8 @@ const config1S3: GeneratorConfig = {
   unitId: '1s3',
   title: 'Positions',
   description: 'Over, under, left, right, in front, behind',
+  titleZh: '位置',
+  descriptionZh: '上、下、左、右、前、後',
   generators: [
     { generator: generators.generatePositionExercises, count: 35, difficulty: 'easy' },
     { generator: generators.generatePositionExercises, count: 20, difficulty: 'medium' },
@@ -196,6 +222,8 @@ const config1F1: GeneratorConfig = {
   unitId: '1f1',
   title: 'Math Thinking',
   description: 'Ask questions, explain reasoning, investigate',
+  titleZh: '數學思維',
+  descriptionZh: '提出問題、說明理由和探究',
   generators: [
     { generator: generators.generateComparisonExercises, count: 20, difficulty: 'medium', params: { maxNumber: 100 } },
     { generator: generators.generateOddEvenExercises, count: 20, difficulty: 'hard', params: { maxNumber: 100 } },
@@ -233,30 +261,31 @@ function createGenerator(
   const p = entry.params || {}
   const extra = entry.extraArgs || []
   const entrySeed = `${seed}-${index}`
+  const locale = config.locale ?? 'en'
 
   if (entry.generator === generators.generateSkipCountingExercises) {
-    // Signature: (unitId, step, difficulty, seed, count)
+    // Signature: (unitId, step, difficulty, seed, count, locale)
     const step = (p.step as 2 | 5 | 10 | undefined) ?? (extra[0] as 2 | 5 | 10 | undefined) ?? 2
-    return entry.generator(unitId, step, entry.difficulty, entrySeed, entry.count)
+    return entry.generator(unitId, step, entry.difficulty, entrySeed, entry.count, locale)
   }
   if (entry.generator === generators.generateHalfPastExercises || entry.generator === generators.generateThreeAddendsExercises) {
-    // Signature: (unitId, seed, count) — no difficulty parameter
-    return entry.generator(unitId, entrySeed, entry.count)
+    // Signature: (unitId, seed, count, locale) — no difficulty parameter
+    return entry.generator(unitId, entrySeed, entry.count, locale)
   }
   if (entry.generator === generators.generateAdditionExercises) {
     const maxSum = (p.maxSum as number | undefined) ?? (extra[0] as number | undefined) ?? 20
-    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxSum)
+    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxSum, locale)
   }
   if (entry.generator === generators.generateSubtractionExercises) {
     const maxMinuend = (p.maxMinuend as number | undefined) ?? (extra[0] as number | undefined) ?? 12
-    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxMinuend)
+    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxMinuend, locale)
   }
   if (entry.generator === generators.generateComparisonExercises || entry.generator === generators.generateOddEvenExercises) {
     const maxNumber = (p.maxNumber as number | undefined) ?? (extra[0] as number | undefined) ?? 20
-    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxNumber)
+    return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, maxNumber, locale)
   }
-  // Standard signature: (unitId, difficulty, seed, count)
-  return entry.generator(unitId, entry.difficulty, entrySeed, entry.count)
+  // Standard signature: (unitId, difficulty, seed, count, locale)
+  return entry.generator(unitId, entry.difficulty, entrySeed, entry.count, locale)
 }
 
 // Generate exercise set from configuration
@@ -289,6 +318,9 @@ export function generateExerciseSet(config: GeneratorConfig, seed: string, targe
   // Size the set to the requested count: trim when the pool is bigger,
   // and cycle through the pool with re-shuffled options when it's smaller
   // (clocks, shapes, etc. can't fill the request with unique questions).
+  const locale = config.locale ?? 'en'
+  const title = locale === 'zh-Hant' ? (config.titleZh ?? config.title) : config.title
+  const description = locale === 'zh-Hant' ? (config.descriptionZh ?? config.description) : config.description
   const goal = targetCount ?? exercises.length
   let finalExercises: Exercise[]
   if (uniqueExercises.length >= goal) {
@@ -307,22 +339,26 @@ export function generateExerciseSet(config: GeneratorConfig, seed: string, targe
   return exerciseSet(
     `${config.unitId}-generated-${seed.substring(0, 8)}`,
     config.unitId,
-    config.title,
-    config.description,
+    title,
+    description,
     finalExercises,
     config.timeLimit
   )
 }
 
 // Generate exercise set for specific unit, optionally restricted to a difficulty
-export function generateExerciseSetForUnit(unitId: string, count: number = 50, difficulty?: Difficulty): ExerciseSet {
+// and localized into Traditional Chinese or English.
+export function generateExerciseSetForUnit(unitId: string, count: number = 50, difficulty?: Difficulty, locale?: Locale): ExerciseSet {
   const config = UNIT_GENERATORS[unitId]
   if (!config) {
     throw new Error(`No generator config found for unit: ${unitId}`)
   }
 
   const seed = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-  const targetConfig = configForDifficulty(config, difficulty)
+  const targetConfig: GeneratorConfig = {
+    ...configForDifficulty(config, difficulty),
+    locale: locale ?? config.locale ?? 'en',
+  }
 
   // Scale generators proportionally to meet requested count
   const totalBaseCount = targetConfig.generators.reduce((sum, g) => sum + g.count * (g.weight ?? 1), 0)
@@ -348,8 +384,8 @@ export function unitHasDifficulty(unitId: string, difficulty?: Difficulty): bool
 }
 
 // Generate mixed practice drawn from all (or selected) units, optionally
-// restricted to a single difficulty level.
-export function generateQuickPractice(count: number = 5, difficulty?: Difficulty, units?: string[]): Exercise[] {
+// restricted to a single difficulty level and localized.
+export function generateQuickPractice(count: number = 5, difficulty?: Difficulty, units?: string[], locale?: Locale): Exercise[] {
   let targetUnits = (units || Object.keys(UNIT_GENERATORS)).filter((u) => unitHasDifficulty(u, difficulty))
 
   // If no unit offers that level, fall back to an unfiltered mix
@@ -369,7 +405,7 @@ export function generateQuickPractice(count: number = 5, difficulty?: Difficulty
     if (exercises.length >= count) break
 
     try {
-      const set = generateExerciseSetForUnit(unitId, Math.min(perUnit, count - exercises.length), difficulty)
+      const set = generateExerciseSetForUnit(unitId, Math.min(perUnit, count - exercises.length), difficulty, locale)
       exercises.push(...set.exercises.slice(0, count - exercises.length))
     } catch (error) {
       console.warn(`Could not generate exercises for unit: ${unitId}`, error)

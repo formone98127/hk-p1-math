@@ -4,11 +4,17 @@ import {
   fillBlank,
 } from './exerciseBuilders'
 import { SeededRandom, generateExerciseId, createSessionSeed } from './randomUtils'
+import type { Locale } from '../i18n/locale'
 
 // Utility to create seeded random instance
 function createRandom(seed?: string): SeededRandom {
   const numericSeed = seed ? seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : Date.now()
   return new SeededRandom(numericSeed)
+}
+
+// Pick the localized wording for the current locale
+function tr(locale: Locale, en: string, zh: string): string {
+  return locale === 'zh-Hant' ? zh : en
 }
 
 // ───────── COUNTING EXERCISE GENERATORS ─────────
@@ -17,7 +23,8 @@ export function* generateCountingExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 20
+  count: number = 20,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed)
   const ranges = {
@@ -43,19 +50,21 @@ export function* generateCountingExercises(
     usedCounts.add(dotCount)
 
     const dots = '●'.repeat(dotCount)
-    const wrongAnswers = [
-      String(random.nextInt(min, max)),
-      String(dotCount + random.nextInt(1, 3)),
-      String(Math.max(min, dotCount - random.nextInt(1, 3)))
-    ].filter(a => a !== String(dotCount))
+    // Wrongs are nearby counts within the range, always distinct from the answer
+    const wrongPool = [dotCount + 1, dotCount - 1, dotCount + 2, dotCount - 2, dotCount + 3, dotCount - 3]
+      .filter(n => n >= min && n <= max && n !== dotCount)
+    const wrongAnswers = random.nextSubset(wrongPool, 3).map(String)
 
     yield multipleChoice(
       generateExerciseId(unitId, 'count', seed, i),
       unitId,
-      `How many dots? ${dots}`,
+      tr(locale, `How many dots? ${dots}`, `有多少個圓點？${dots}`),
       String(dotCount),
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -64,7 +73,8 @@ export function* generateNumberSequenceExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 15
+  count: number = 15,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-seq')
   const ranges = {
@@ -84,7 +94,7 @@ export function* generateNumberSequenceExercises(
     let wrongAnswers: string[]
 
     if (qType === 'next') {
-      question = `What comes after ${target}?`
+      question = tr(locale, `What comes after ${target}?`, `${target} 之後是多少？`)
       correctAnswer = String(target + 1)
       wrongAnswers = [
         String(target - 1 >= 0 ? target - 1 : target + 2),
@@ -92,7 +102,7 @@ export function* generateNumberSequenceExercises(
         String(target)
       ].filter(a => a !== correctAnswer && !isNaN(Number(a)) && Number(a) >= 0)
     } else if (qType === 'before') {
-      question = `What comes before ${target}?`
+      question = tr(locale, `What comes before ${target}?`, `${target} 之前是多少？`)
       correctAnswer = String(Math.max(0, target - 1))
       wrongAnswers = [
         String(target + 1),
@@ -102,7 +112,7 @@ export function* generateNumberSequenceExercises(
     } else {
       const lower = target - 1
       const upper = target + 1
-      question = `What number is between ${lower} and ${upper}?`
+      question = tr(locale, `What number is between ${lower} and ${upper}?`, `${lower} 和 ${upper} 之間是哪個數？`)
       correctAnswer = String(target)
       wrongAnswers = [
         String(lower),
@@ -117,7 +127,10 @@ export function* generateNumberSequenceExercises(
       question,
       correctAnswer,
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -129,7 +142,8 @@ export function* generateAdditionExercises(
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
   count: number = 20,
-  maxSum: number = 20
+  maxSum: number = 20,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-add')
 
@@ -160,7 +174,10 @@ export function* generateAdditionExercises(
       question,
       String(correct),
       [String(correct + random.nextInt(1, 3)), String(Math.max(0, correct - random.nextInt(1, 3))), String(correct + random.nextInt(2, 5))],
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -170,7 +187,8 @@ export function* generateSubtractionExercises(
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
   count: number = 20,
-  maxMinuend: number = 12
+  maxMinuend: number = 12,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-sub')
 
@@ -201,7 +219,10 @@ export function* generateSubtractionExercises(
       question,
       String(correct),
       [String(correct + random.nextInt(1, 3)), String(Math.max(0, correct - random.nextInt(1, 2))), String(correct + random.nextInt(2, 4))],
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -209,7 +230,8 @@ export function* generateSubtractionExercises(
 export function* generateThreeAddendsExercises(
   unitId: string,
   seed: string = createSessionSeed(),
-  count: number = 10
+  count: number = 10,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-three')
 
@@ -225,7 +247,10 @@ export function* generateThreeAddendsExercises(
       `${a} + ${b} + ${c} = ?`,
       String(correct),
       [String(correct + random.nextInt(1, 3)), String(Math.max(0, correct - random.nextInt(1, 2))), String(correct + random.nextInt(2, 4))],
-      'hard'
+      'hard',
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -237,9 +262,14 @@ export function* generateComparisonExercises(
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
   count: number = 15,
-  maxNumber: number = 20
+  maxNumber: number = 20,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-compare')
+  const same = tr(locale, 'Same', '一樣')
+  const yes = tr(locale, 'yes', '對')
+  const no = tr(locale, 'no', '不對')
+  const dontKnow = tr(locale, "don't know", '不知道')
 
   // Scale the number range toward maxNumber so 1N1 (max 20) stays small
   // while 1N3 (max 100) reaches into the tens.
@@ -254,7 +284,16 @@ export function* generateComparisonExercises(
     const min = rangeMin[difficulty]
     const max = rangeMax[difficulty]
     const a = random.nextInt(min, max)
-    const b = random.nextInt(min, max)
+    // b must differ from a so bigger/smaller questions are never ambiguous
+    let b = random.nextInt(min, max)
+    if (b === a) {
+      b = a < max ? a + 1 : a - 1
+    }
+    // A third distinct number so every option is meaningful (no fallback fill)
+    let third = random.nextInt(min, max)
+    while (third === a || third === b) {
+      third = third < max ? third + 1 : third - 1
+    }
 
     const questionTypes = ['bigger', 'smaller', 'compare']
     const qType = random.nextArray(questionTypes)
@@ -264,24 +303,18 @@ export function* generateComparisonExercises(
     let wrongAnswers: string[]
 
     if (qType === 'bigger') {
-      question = `Which number is bigger: ${a} or ${b}?`
-      correctAnswer = String(a > b ? a : b)
-      wrongAnswers = [
-        String(a < b ? a : b),
-        a === b ? 'Same' : String(a)
-      ].filter(a => a !== correctAnswer)
+      question = tr(locale, `Which number is bigger: ${a} or ${b}?`, `哪個數較大：${a} 或 ${b}？`)
+      correctAnswer = String(Math.max(a, b))
+      wrongAnswers = [String(Math.min(a, b)), same, String(third)]
     } else if (qType === 'smaller') {
-      question = `Which number is smaller: ${a} or ${b}?`
-      correctAnswer = String(a < b ? a : b)
-      wrongAnswers = [
-        String(a > b ? a : b),
-        a === b ? 'Same' : String(b)
-      ].filter(a => a !== correctAnswer)
+      question = tr(locale, `Which number is smaller: ${a} or ${b}?`, `哪個數較小：${a} 或 ${b}？`)
+      correctAnswer = String(Math.min(a, b))
+      wrongAnswers = [String(Math.max(a, b)), same, String(third)]
     } else {
-      const symbol = a < b ? '<' : a > b ? '>' : '='
-      question = `Is ${a} ${symbol} ${b}?`
-      correctAnswer = 'yes'
-      wrongAnswers = ['no', 'Same', a === b ? 'yes' : 'no']
+      const symbol = a < b ? '<' : '>'
+      question = tr(locale, `Is ${a} ${symbol} ${b}?`, `${a} ${symbol} ${b}，對嗎？`)
+      correctAnswer = yes
+      wrongAnswers = [no, same, dontKnow]
     }
 
     yield multipleChoice(
@@ -290,7 +323,10 @@ export function* generateComparisonExercises(
       question,
       correctAnswer,
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -300,9 +336,12 @@ export function* generateOddEvenExercises(
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
   count: number = 15,
-  maxNumber: number = 20
+  maxNumber: number = 20,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-oddeven')
+  const odd = tr(locale, 'odd', '單數')
+  const even = tr(locale, 'even', '雙數')
 
   const rangeMax = {
     easy: Math.max(10, Math.floor(maxNumber * 0.5)),
@@ -324,19 +363,24 @@ export function* generateOddEvenExercises(
     let wrongAnswers: string[]
 
     if (qType === 'identify') {
-      question = `Is ${target} odd or even?`
-      correctAnswer = isEven ? 'even' : 'odd'
-      wrongAnswers = [isEven ? 'odd' : 'even', 'both', 'neither']
+      question = tr(locale, `Is ${target} odd or even?`, `${target} 是單數還是雙數？`)
+      correctAnswer = isEven ? even : odd
+      wrongAnswers = [isEven ? odd : even, tr(locale, 'both', '兩者皆是'), tr(locale, 'neither', '兩者皆不是')]
     } else if (qType === 'which') {
       // Distractors are always the opposite parity so the question stays unambiguous
-      const wrongs = [target + 1, target - 1 >= 1 ? target - 1 : target + 3]
-      question = `Which ${isEven ? 'even' : 'odd'} number? ${[target, ...wrongs].join(', ')}`
+      const wrongs = [target + 1, target + 3, target - 1 >= 1 ? target - 1 : target + 5]
+      const list = [target, ...wrongs].join(locale === 'zh-Hant' ? '、' : ', ')
+      question = tr(locale, `Which of these is ${isEven ? 'even' : 'odd'}? ${list}`, `${list}，哪個是${isEven ? even : odd}？`)
       correctAnswer = String(target)
       wrongAnswers = wrongs.map(String)
     } else {
-      question = `Can ${target} be split into two equal groups?`
-      correctAnswer = isEven ? 'yes' : 'no'
-      wrongAnswers = [isEven ? 'no' : 'yes', 'maybe', 'sometimes']
+      question = tr(locale, `Can ${target} be split into two equal groups?`, `${target} 可以分成兩個數量相同的組別嗎？`)
+      correctAnswer = isEven ? tr(locale, 'yes', '可以') : tr(locale, 'no', '不可以')
+      wrongAnswers = [
+        isEven ? tr(locale, 'no', '不可以') : tr(locale, 'yes', '可以'),
+        tr(locale, 'maybe', '或者可以'),
+        tr(locale, 'sometimes', '有時可以'),
+      ]
     }
 
     yield multipleChoice(
@@ -345,7 +389,10 @@ export function* generateOddEvenExercises(
       question,
       correctAnswer,
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -357,7 +404,8 @@ export function* generateSkipCountingExercises(
   step: 2 | 5 | 10,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 12
+  count: number = 12,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + `-skip${step}`)
 
@@ -381,47 +429,89 @@ export function* generateSkipCountingExercises(
       `${displaySequence.join(', ')}`,
       String(missing),
       difficulty,
-      `Count by ${step}s`
+      tr(locale, `Count by ${step}s`, `每次加 ${step}`)
     )
   }
 }
 
 // ───────── WORD PROBLEM GENERATORS ─────────
 
-const WORD_PROBLEM_TEMPLATES: Record<string, string[]> = {
-  addition: [
-    "You have {a} {item}. Get {b} more. How many?",
-    "There are {a} {item} and {b} {item2}. Total?",
-    "{name} has {a}. {name2} gives {b}. How many now?",
-    "{name} found {a} {item}. Then found {b} more. Total?",
-    "Put {a} {item} in the box. Add {b} more. How many?"
-  ],
-  subtraction: [
-    "You have {a} {item}. Give {b} away. Left?",
-    "{a} {item} on {place}. {b} {action}. How many?",
-    "Start with {a}. {action} {b}. What's left?",
-    "{name} has {a} {item}. Loses {b}. How many now?",
-    "Take {b} away from {a}. What remains?"
-  ],
-  comparison: [
-    "{nameA} has {a} {item}. {nameB} has {b} {item}. Who has more?",
-    "Which is more: {a} or {b}?",
-    "{nameA} has {a}. {nameB} has {b}. Who has less?"
-  ]
+const WORD_PROBLEM_TEMPLATES: Record<Locale, Record<string, string[]>> = {
+  en: {
+    addition: [
+      "You have {a} {item}. Get {b} more. How many?",
+      "There are {a} {item} and {b} {item2}. Total?",
+      "{name} has {a}. {name2} gives {b}. How many now?",
+      "{name} found {a} {item}. Then found {b} more. Total?",
+      "Put {a} {item} in the box. Add {b} more. How many?"
+    ],
+    subtraction: [
+      "You have {a} {item}. Give {b} away. Left?",
+      "There are {a} {item} on the {place}. {b} {action}. How many left?",
+      "Start with {a}. {action} {b}. What's left?",
+      "{name} has {a} {item}. Loses {b}. How many now?",
+      "Take {b} away from {a}. What remains?"
+    ],
+    comparison: [
+      "{nameA} has {a} {item}. {nameB} has {b} {item}. Who has more?",
+      "Which is more: {a} or {b}?",
+      "{nameA} has {a}. {nameB} has {b}. Who has less?"
+    ]
+  },
+  'zh-Hant': {
+    addition: [
+      '你有 {a} 個{item}，再多拿 {b} 個，共有多少個？',
+      '有 {a} 個{item}和 {b} 個{item2}，共有多少個？',
+      '{name}有 {a} 個，又得到 {b} 個，現在有多少個？',
+      '{name}找到 {a} 個{item}，再找到 {b} 個，共有多少個？',
+      '盒子裏有 {a} 個{item}，再加入 {b} 個，共有多少個？'
+    ],
+    subtraction: [
+      '你有 {a} 個{item}，送給別人 {b} 個，剩下多少個？',
+      '{place}有 {a} 個{item}，拿走 {b} 個，剩下多少個？',
+      '開始有 {a} 個，{action} {b} 個，剩下多少個？',
+      '{name}有 {a} 個{item}，不見了 {b} 個，現在有多少個？',
+      '有 {a} 個，拿走 {b} 個，剩下多少個？'
+    ],
+    comparison: [
+      '{nameA}有 {a} 個{item}，{nameB}有 {b} 個{item}，誰較多？',
+      '哪個較多：{a} 或 {b}？',
+      '{nameA}有 {a} 個，{nameB}有 {b} 個，誰較少？'
+    ]
+  }
 }
 
-const ITEMS = ['apples', 'stickers', 'balls', 'books', 'cookies', 'pencils', 'toys', 'marbles']
-const NAMES = ['Tom', 'Mary', 'John', 'Amy', 'Ben', 'Lisa', 'Mike', 'Sarah']
-const NAMES2 = ['Sam', 'Emma', 'Jack', 'Kate', 'Leo', 'Mia']
-const ITEMS2 = ['oranges', 'cards', 'games', 'stories', 'candies', 'pens']
-const PLACES = ['tree', 'table', 'bag', 'box', 'shelf', 'desk']
-const ACTIONS = ['fly away', 'roll away', 'fall off', 'get taken']
+const ITEMS: Record<Locale, string[]> = {
+  en: ['apples', 'stickers', 'balls', 'books', 'cookies', 'pencils', 'toys', 'marbles'],
+  'zh-Hant': ['蘋果', '貼紙', '波', '書本', '曲奇餅', '鉛筆', '玩具', '波子'],
+}
+const NAMES: Record<Locale, string[]> = {
+  en: ['Tom', 'Mary', 'John', 'Amy', 'Ben', 'Lisa', 'Mike', 'Sarah'],
+  'zh-Hant': ['小明', '小美', '阿傑', '小芬', '小欣', '小文', '小儀', '小浩'],
+}
+const NAMES2: Record<Locale, string[]> = {
+  en: ['Sam', 'Emma', 'Jack', 'Kate', 'Leo', 'Mia'],
+  'zh-Hant': ['小強', '小麗', '小俊', '小婷', '小偉', '小琪'],
+}
+const ITEMS2: Record<Locale, string[]> = {
+  en: ['oranges', 'cards', 'games', 'stories', 'candies', 'pens'],
+  'zh-Hant': ['橙', '卡', '遊戲', '故事', '糖果', '筆'],
+}
+const PLACES: Record<Locale, string[]> = {
+  en: ['tree', 'table', 'bag', 'box', 'shelf', 'desk'],
+  'zh-Hant': ['樹上', '桌上', '袋裏', '盒裏', '架上', '書枱上'],
+}
+const ACTIONS: Record<Locale, string[]> = {
+  en: ['fly away', 'roll away', 'fall off', 'get taken'],
+  'zh-Hant': ['飛走了', '滾走了', '跌落了', '被拿走了'],
+}
 
 export function* generateWordProblems(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 15
+  count: number = 15,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-word')
   const ranges = {
@@ -437,7 +527,7 @@ export function* generateWordProblems(
 
     const problemTypes: Array<'addition' | 'subtraction' | 'comparison'> = ['addition', 'subtraction', 'comparison']
     const problemType = random.nextArray(problemTypes)
-    const templates = WORD_PROBLEM_TEMPLATES[problemType]
+    const templates = WORD_PROBLEM_TEMPLATES[locale][problemType]
     const template = random.nextArray(templates)
 
     // Comparison questions need distinct values so 'Same' is never the answer
@@ -446,8 +536,10 @@ export function* generateWordProblems(
     }
 
     // Comparison questions pin the names so the answer is deterministic
+    const [nameA, nameB] = locale === 'zh-Hant' ? ['小明', '小美'] : ['Tom', 'Sam']
+    const same = tr(locale, 'Same', '一樣')
     let question = problemType === 'comparison'
-      ? template.split('{nameA}').join('Tom').split('{nameB}').join('Sam')
+      ? template.split('{nameA}').join(nameA).split('{nameB}').join(nameB)
       : template
     // Replace every occurrence (some templates use a placeholder twice)
     const fill = (key: string, value: string) => {
@@ -455,14 +547,14 @@ export function* generateWordProblems(
     }
     fill('{a}', String(a))
     fill('{b}', String(b))
-    fill('{item}', random.nextArray(ITEMS))
-    fill('{item2}', random.nextArray(ITEMS2))
-    fill('{name}', random.nextArray(NAMES))
-    fill('{name2}', random.nextArray(NAMES2))
-    fill('{nameA}', random.nextArray(NAMES))
-    fill('{nameB}', random.nextArray(NAMES2))
-    fill('{place}', random.nextArray(PLACES))
-    fill('{action}', random.nextArray(ACTIONS))
+    fill('{item}', random.nextArray(ITEMS[locale]))
+    fill('{item2}', random.nextArray(ITEMS2[locale]))
+    fill('{name}', random.nextArray(NAMES[locale]))
+    fill('{name2}', random.nextArray(NAMES2[locale]))
+    fill('{nameA}', random.nextArray(NAMES[locale]))
+    fill('{nameB}', random.nextArray(NAMES2[locale]))
+    fill('{place}', random.nextArray(PLACES[locale]))
+    fill('{action}', random.nextArray(ACTIONS[locale]))
 
     let correctAnswer: number | string
     let wrongAnswers: (string | number)[]
@@ -481,12 +573,15 @@ export function* generateWordProblems(
         Number(correctAnswer) + random.nextInt(2, 4),
       ]
     } else {
-      if (template.includes('Which is more')) {
+      const numericCompare = template.includes('Which is more') || template.includes('哪個較多')
+      if (numericCompare) {
         correctAnswer = String(Math.max(a, b))
-        wrongAnswers = [String(Math.min(a, b)), 'Same', String(Math.max(a, b) + random.nextInt(1, 3))]
+        wrongAnswers = [String(Math.min(a, b)), same, String(Math.max(a, b) + random.nextInt(1, 3))]
       } else {
-        correctAnswer = a > b ? 'Tom' : 'Sam'
-        wrongAnswers = random.nextSubset([...NAMES, ...NAMES2, 'Same'].filter(n => n !== String(correctAnswer)), 3)
+        // 'Who has less?' asks for the person with the smaller amount
+        const whoHasLess = template.includes('Who has less') || template.includes('誰較少')
+        correctAnswer = whoHasLess ? (a < b ? nameA : nameB) : (a > b ? nameA : nameB)
+        wrongAnswers = random.nextSubset([...NAMES[locale], ...NAMES2[locale], same].filter(n => n !== String(correctAnswer)), 3)
       }
     }
 
@@ -496,7 +591,10 @@ export function* generateWordProblems(
       question,
       String(correctAnswer),
       wrongAnswers.map(String),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
     // Keep the word-problem type (exercises are still rendered as multiple choice)
     yield { ...optioned, type: 'wordProblem' as const }
@@ -509,7 +607,8 @@ export function* generateClockExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 12
+  count: number = 12,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-clock')
 
@@ -523,17 +622,29 @@ export function* generateClockExercises(
     let wrongAnswers: string[]
 
     if (qType === 'oclock') {
-      question = `Hour hand at ${hour} shows what time?`
+      question = tr(locale, `Hour hand at ${hour} shows what time?`, `時針指向 ${hour}，現在是幾點？`)
       correctAnswer = `${hour}:00`
-      wrongAnswers = [
-        `${random.nextInt(1, 12)}:00`,
-        `${Math.max(1, hour - 1)}:00`,
-        `${Math.min(12, hour + 1)}:00`
-      ]
+      // Three wrong hours that are distinct from the correct one
+      const wrongHours = new Set<number>()
+      while (wrongHours.size < 3) {
+        const h = random.nextInt(1, 12)
+        if (h !== hour) wrongHours.add(h)
+      }
+      wrongAnswers = [...wrongHours].map(h => `${h}:00`)
     } else {
-      question = `Where does the hour hand point for ${hour}:00?`
-      correctAnswer = `at ${hour}`
-      wrongAnswers = ['at ' + random.nextInt(1, 12), 'between ' + random.nextInt(1, 11), 'past ' + random.nextInt(1, 12)]
+      const at = tr(locale, 'at', '指向')
+      const between = tr(locale, 'between', '在')
+      const past = tr(locale, 'past', '過了')
+      question = tr(locale, `Where does the hour hand point for ${hour}:00?`, `${hour} 點正，時針指向哪裏？`)
+      correctAnswer = `${at} ${hour}`
+      let pointWrong = random.nextInt(1, 12)
+      if (pointWrong === hour) pointWrong = hour < 12 ? hour + 1 : hour - 1
+      if (locale === 'zh-Hant') {
+        const betweenN = random.nextInt(1, 11)
+        wrongAnswers = [`指向 ${pointWrong}`, `在 ${betweenN} 和 ${betweenN + 1} 之間`, `過了 ${random.nextInt(1, 12)}`]
+      } else {
+        wrongAnswers = [`${at} ${pointWrong}`, `${between} ${random.nextInt(1, 11)}`, `${past} ${random.nextInt(1, 12)}`]
+      }
     }
 
     yield multipleChoice(
@@ -542,7 +653,10 @@ export function* generateClockExercises(
       question,
       correctAnswer,
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -550,13 +664,14 @@ export function* generateClockExercises(
 export function* generateHalfPastExercises(
   unitId: string,
   seed: string = createSessionSeed(),
-  count: number = 8
+  count: number = 8,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-half')
 
   for (let i = 0; i < count; i++) {
     const hour = random.nextInt(1, 12)
-    const question = `What time is half past ${hour}?`
+    const question = tr(locale, `What time is half past ${hour}?`, `時鐘顯示 ${hour} 點半，現在是幾點？`)
     const correctAnswer = `${hour}:30`
 
     const wrongAnswers = [
@@ -571,7 +686,10 @@ export function* generateHalfPastExercises(
       question,
       correctAnswer,
       wrongAnswers,
-      'medium'
+      'medium',
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -582,7 +700,8 @@ export function* generateCoinCountingExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 12
+  count: number = 12,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-coins')
 
@@ -599,19 +718,22 @@ export function* generateCoinCountingExercises(
     const total = coins.reduce((sum, coin) => sum + coin, 0)
     const coinDesc = coins.map(c => `$${c}`).join(' + ')
 
-    const wrongAnswers = [
-      String(total + random.nextInt(1, 3)),
-      String(Math.max(1, total - random.nextInt(1, 2))),
-      String(total + random.nextInt(2, 4))
-    ]
+    // Wrongs keep the $ format and stay distinct so no fallback fill is needed
+    const off1 = total + random.nextInt(1, 3)
+    const off2 = total + random.nextInt(4, 6)
+    const off3 = Math.max(1, total - random.nextInt(1, 2))
+    const wrongAnswers = [`$${off1}`, `$${off2}`, `$${off3}`]
 
     yield multipleChoice(
       generateExerciseId(unitId, 'coins', seed, i),
       unitId,
-      `How much: ${coinDesc}?`,
+      tr(locale, `How much: ${coinDesc}?`, `合共多少錢：${coinDesc}？`),
       `$${total}`,
       wrongAnswers.slice(0, 3),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -623,22 +745,34 @@ const SHAPES_3D = ['cube', 'cylinder', 'sphere', 'cone'] as const
 
 type Shape2D = typeof SHAPES_2D[number]
 
-const SHAPE_PROPERTIES: Record<string, { sides: number; corners: number; description: string }> = {
-  triangle: { sides: 3, corners: 3, description: '3 sides and 3 corners' },
-  square: { sides: 4, corners: 4, description: '4 equal sides and 4 corners' },
-  rectangle: { sides: 4, corners: 4, description: '4 sides (opposite equal) and 4 corners' },
-  circle: { sides: 0, corners: 0, description: 'round, no straight sides or corners' },
-  pentagon: { sides: 5, corners: 5, description: '5 sides and 5 corners' },
-  hexagon: { sides: 6, corners: 6, description: '6 sides and 6 corners' }
+// Localized display names (internal keys stay English in code)
+const SHAPE_2D_NAMES: Record<Locale, Record<string, string>> = {
+  en: { triangle: 'triangle', square: 'square', rectangle: 'rectangle', circle: 'circle', pentagon: 'pentagon', hexagon: 'hexagon' },
+  'zh-Hant': { triangle: '三角形', square: '正方形', rectangle: '長方形', circle: '圓形', pentagon: '五邊形', hexagon: '六邊形' },
+}
+const SHAPE_3D_NAMES: Record<Locale, Record<string, string>> = {
+  en: { cube: 'cube', cylinder: 'cylinder', sphere: 'sphere', cone: 'cone' },
+  'zh-Hant': { cube: '立方體', cylinder: '圓柱體', sphere: '球體', cone: '圓錐體' },
+}
+
+const SHAPE_PROPERTIES: Record<string, { sides: number; corners: number; descriptionEn: string; descriptionZh: string }> = {
+  triangle: { sides: 3, corners: 3, descriptionEn: '3 sides and 3 corners', descriptionZh: '3 條邊和 3 個角' },
+  square: { sides: 4, corners: 4, descriptionEn: '4 equal sides and 4 corners', descriptionZh: '4 條相等的邊和 4 個角' },
+  rectangle: { sides: 4, corners: 4, descriptionEn: '4 sides (opposite equal) and 4 corners', descriptionZh: '4 條邊（對邊相等）和 4 個角' },
+  circle: { sides: 0, corners: 0, descriptionEn: 'round, no straight sides or corners', descriptionZh: '圓圓的，沒有直邊或角' },
+  pentagon: { sides: 5, corners: 5, descriptionEn: '5 sides and 5 corners', descriptionZh: '5 條邊和 5 個角' },
+  hexagon: { sides: 6, corners: 6, descriptionEn: '6 sides and 6 corners', descriptionZh: '6 條邊和 6 個角' }
 }
 
 export function* generateShape2DExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 10
+  count: number = 10,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-shape2d')
+  const shapeNames = SHAPE_2D_NAMES[locale]
 
   const questionTypes = ['sides', 'corners', 'identify', 'sideCount', 'cornersCount', 'properties']
   const availableShapes: Shape2D[] = difficulty === 'easy' ? [...SHAPES_2D.slice(0, 4)] : [...SHAPES_2D]
@@ -651,8 +785,11 @@ export function* generateShape2DExercises(
     let correctAnswer: string | number
     let wrongAnswers: (string | number)[]
 
+    const shapeName = shapeNames[shape]
+    const props = locale === 'zh-Hant' ? SHAPE_PROPERTIES[shape].descriptionZh : SHAPE_PROPERTIES[shape].descriptionEn
+
     if (qType === 'sides') {
-      question = `How many sides does a ${shape} have?`
+      question = tr(locale, `How many sides does a ${shapeName} have?`, `${shapeName}有幾條邊？`)
       correctAnswer = SHAPE_PROPERTIES[shape].sides
       wrongAnswers = [
         SHAPE_PROPERTIES[shape].sides + random.nextInt(1, 2),
@@ -660,7 +797,7 @@ export function* generateShape2DExercises(
         SHAPE_PROPERTIES[shape].sides + 2
       ]
     } else if (qType === 'corners') {
-      question = `How many corners does a ${shape} have?`
+      question = tr(locale, `How many corners does a ${shapeName} have?`, `${shapeName}有幾個角？`)
       correctAnswer = SHAPE_PROPERTIES[shape].corners
       wrongAnswers = [
         SHAPE_PROPERTIES[shape].corners + random.nextInt(1, 2),
@@ -672,27 +809,26 @@ export function* generateShape2DExercises(
       // share a count, so only use it when the count is unique.
       const key = qType === 'sideCount' ? 'sides' : 'corners'
       const count = SHAPE_PROPERTIES[shape][key]
+      const countWord = tr(locale, key, key === 'sides' ? '條邊' : '個角')
       const isUnique = availableShapes.filter(s => SHAPE_PROPERTIES[s][key] === count).length === 1
       if (isUnique) {
-        question = `Which shape has ${count} ${key}?`
-        correctAnswer = shape
-        wrongAnswers = availableShapes.filter(s => SHAPE_PROPERTIES[s][key] !== count)
+        question = tr(locale, `Which shape has ${count} ${key}?`, `哪個圖形有 ${count} ${countWord}？`)
+        correctAnswer = shapeName
+        wrongAnswers = availableShapes.filter(s => SHAPE_PROPERTIES[s][key] !== count).map(s => shapeNames[s])
       } else {
-        const props = SHAPE_PROPERTIES[shape].description
-        question = `What shape has ${props}?`
-        correctAnswer = shape
-        wrongAnswers = availableShapes.filter(s => s !== shape)
+        question = tr(locale, `What shape has ${props}?`, `哪個圖形有 ${props}？`)
+        correctAnswer = shapeName
+        wrongAnswers = availableShapes.filter(s => s !== shape).map(s => shapeNames[s])
       }
     } else if (qType === 'identify') {
-      const props = SHAPE_PROPERTIES[shape].description
-      question = `What shape has ${props}?`
-      correctAnswer = shape
-      const otherShapes = availableShapes.filter(s => s !== shape)
+      question = tr(locale, `What shape has ${props}?`, `哪個圖形有 ${props}？`)
+      correctAnswer = shapeName
+      const otherShapes = availableShapes.filter(s => s !== shape).map(s => shapeNames[s])
       wrongAnswers = random.nextSubset(otherShapes, 3)
     } else {
-      question = `Which shape is round?`
-      correctAnswer = 'circle'
-      wrongAnswers = ['square', 'triangle', 'rectangle']
+      question = tr(locale, 'Which shape is round?', '哪個圖形是圓的？')
+      correctAnswer = shapeNames.circle
+      wrongAnswers = [shapeNames.square, shapeNames.triangle, shapeNames.rectangle]
     }
 
     yield multipleChoice(
@@ -701,7 +837,10 @@ export function* generateShape2DExercises(
       question,
       String(correctAnswer),
       wrongAnswers.slice(0, 3).map(String),
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
@@ -710,9 +849,19 @@ export function* generateShape3DExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 10
+  count: number = 10,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-shape3d')
+  const shapeNames = SHAPE_3D_NAMES[locale]
+  // Roll questions answer 可以/不可以; face/corner questions answer 有/沒有
+  const canYes = tr(locale, 'yes', '可以')
+  const canNo = tr(locale, 'no', '不可以')
+  const hasYes = tr(locale, 'yes', '有')
+  const hasNo = tr(locale, 'no', '沒有')
+  const maybeRoll = tr(locale, 'maybe', '或者可以')
+  const maybeHas = tr(locale, 'maybe', '或者有')
+  const dontKnow = tr(locale, "don't know", '不知道')
 
   const questionTypes = ['roll', 'faces', 'corners', 'identify', 'properties']
 
@@ -724,46 +873,56 @@ export function* generateShape3DExercises(
     let correctAnswer: string
     let wrongAnswers: string[]
 
+    const shapeName = shapeNames[shape]
+
     if (qType === 'roll') {
       const canRoll = ['sphere', 'cylinder', 'cone'].includes(shape)
-      question = `Can a ${shape} roll like a wheel?`
-      correctAnswer = canRoll ? 'yes' : 'no'
-      wrongAnswers = [canRoll ? 'no' : 'yes', 'maybe', 'sometimes']
+      question = tr(locale, `Can a ${shapeName} roll like a wheel?`, `${shapeName}可以像車輪一樣滾動嗎？`)
+      correctAnswer = canRoll ? canYes : canNo
+      wrongAnswers = [canRoll ? canNo : canYes, maybeRoll, dontKnow]
     } else if (qType === 'faces') {
       if (shape === 'cube') {
-        question = 'How many flat faces does a cube have?'
+        question = tr(locale, 'How many flat faces does a cube have?', '立方體有幾個平面？')
         correctAnswer = '6'
         wrongAnswers = ['4', '8', '5']
       } else if (shape === 'cylinder') {
-        question = 'How many flat faces does a cylinder have?'
+        question = tr(locale, 'How many flat faces does a cylinder have?', '圓柱體有幾個平面？')
         correctAnswer = '2'
         wrongAnswers = ['0', '3', '1']
       } else {
         // A cone has 1 flat face; a sphere has none
-        question = `Does a ${shape} have flat faces?`
-        correctAnswer = shape === 'cone' ? 'yes' : 'no'
-        wrongAnswers = [shape === 'cone' ? 'no' : 'yes', 'maybe', 'sometimes']
+        question = tr(locale, `Does a ${shapeName} have flat faces?`, `${shapeName}有平面嗎？`)
+        correctAnswer = shape === 'cone' ? hasYes : hasNo
+        wrongAnswers = [shape === 'cone' ? hasNo : hasYes, maybeHas, dontKnow]
       }
     } else if (qType === 'corners') {
       // Cubes and cones have corners; spheres and cylinders don't
       const hasCorners = shape === 'cube' || shape === 'cone'
-      question = `Does a ${shape} have corners?`
-      correctAnswer = hasCorners ? 'yes' : 'no'
-      wrongAnswers = [hasCorners ? 'no' : 'yes', 'maybe', 'sometimes']
+      question = tr(locale, `Does a ${shapeName} have corners?`, `${shapeName}有角嗎？`)
+      correctAnswer = hasCorners ? hasYes : hasNo
+      wrongAnswers = [hasCorners ? hasNo : hasYes, maybeHas, dontKnow]
     } else if (qType === 'identify') {
-      const descriptions: Record<string, string> = {
-        cube: '6 square faces, all same size',
-        cylinder: '2 flat faces, can roll',
-        sphere: 'no corners, can roll any direction',
-        cone: '1 flat face, pointy top'
+      const descriptions: Record<Locale, Record<string, string>> = {
+        en: {
+          cube: '6 square faces, all same size',
+          cylinder: '2 flat faces, can roll',
+          sphere: 'no corners, can roll any direction',
+          cone: '1 flat face, pointy top'
+        },
+        'zh-Hant': {
+          cube: '有 6 個正方形面，大小相同',
+          cylinder: '有 2 個平面，可以滾動',
+          sphere: '沒有角，可以向任何方向滾動',
+          cone: '有 1 個平面，頂部尖尖的'
+        }
       }
-      question = `What 3-D shape ${descriptions[shape]}?`
-      correctAnswer = shape
-      wrongAnswers = SHAPES_3D.filter(s => s !== shape).slice(0, 3)
+      question = tr(locale, `What 3-D shape ${descriptions.en[shape]}?`, `哪個立體圖形${descriptions['zh-Hant'][shape]}？`)
+      correctAnswer = shapeName
+      wrongAnswers = SHAPES_3D.filter(s => s !== shape).map(s => shapeNames[s]).slice(0, 3)
     } else {
-      question = `Which shape has no corners?`
-      correctAnswer = 'sphere'
-      wrongAnswers = ['cube', 'cylinder', 'cone']
+      question = tr(locale, 'Which shape has no corners?', '哪個圖形沒有角？')
+      correctAnswer = shapeNames.sphere
+      wrongAnswers = [shapeNames.cube, shapeNames.cylinder, shapeNames.cone]
     }
 
     yield multipleChoice(
@@ -772,54 +931,75 @@ export function* generateShape3DExercises(
       question,
       correctAnswer,
       wrongAnswers,
-      difficulty
+      difficulty,
+      undefined,
+      undefined,
+      locale
     )
   }
 }
 
 // ───────── POSITION GENERATORS ─────────
 
-const POSITION_CONCEPTS = {
-  over: ['over', 'above', 'on top of'],
-  under: ['under', 'below', 'beneath'],
-  left: ['left', 'to the left'],
-  right: ['right', 'to the right'],
-  inFront: ['in front of', 'before'],
-  behind: ['behind', 'after', 'in back of']
+const POSITION_CONCEPTS: Record<Locale, Record<string, string[]>> = {
+  en: {
+    over: ['over', 'above', 'on top of'],
+    under: ['under', 'below', 'beneath'],
+    left: ['left', 'to the left'],
+    right: ['right', 'to the right'],
+    inFront: ['in front of', 'before'],
+    behind: ['behind', 'after', 'in back of'],
+  },
+  'zh-Hant': {
+    over: ['上面', '上方', '之上'],
+    under: ['下面', '下方', '之下'],
+    left: ['左面', '左邊'],
+    right: ['右面', '右邊'],
+    inFront: ['前面', '前方'],
+    behind: ['後面', '後方'],
+  },
 }
 
 // Friendly labels shown as answer options (internal keys stay in code only)
-const POSITION_LABELS: Record<string, string> = {
-  over: 'over',
-  under: 'under',
-  left: 'left',
-  right: 'right',
-  inFront: 'in front',
-  behind: 'behind',
+const POSITION_LABELS: Record<Locale, Record<string, string>> = {
+  en: { over: 'over', under: 'under', left: 'left', right: 'right', inFront: 'in front', behind: 'behind' },
+  'zh-Hant': { over: '上面', under: '下面', left: '左邊', right: '右邊', inFront: '前面', behind: '後面' },
 }
 
-const POSITION_SCENARIOS = [
-  { subject: 'cat', location: 'chair', opposite: 'floor' },
-  { subject: 'bird', location: 'tree', opposite: 'ground' },
-  { subject: 'ball', location: 'box', opposite: 'table' },
-  { subject: 'book', location: 'desk', opposite: 'floor' },
-  { subject: 'toy', location: 'bed', opposite: 'shelf' }
-]
+const POSITION_SCENARIOS: Record<Locale, Array<{ subject: string; location: string }>> = {
+  en: [
+    { subject: 'cat', location: 'chair' },
+    { subject: 'bird', location: 'tree' },
+    { subject: 'ball', location: 'box' },
+    { subject: 'book', location: 'desk' },
+    { subject: 'toy', location: 'bed' },
+  ],
+  'zh-Hant': [
+    { subject: '貓', location: '椅子' },
+    { subject: '雀仔', location: '樹' },
+    { subject: '波', location: '盒' },
+    { subject: '書', location: '書枱' },
+    { subject: '玩具', location: '床' },
+  ],
+}
 
 export function* generatePositionExercises(
   unitId: string,
   difficulty: Difficulty,
   seed: string = createSessionSeed(),
-  count: number = 12
+  count: number = 12,
+  locale: Locale = 'en'
 ): Generator<Exercise> {
   const random = createRandom(seed + '-position')
-
-  const positions = Object.keys(POSITION_CONCEPTS) as Array<keyof typeof POSITION_CONCEPTS>
+  const concepts = POSITION_CONCEPTS[locale]
+  const labels = POSITION_LABELS[locale]
+  const scenarios = POSITION_SCENARIOS[locale]
+  const positions = Object.keys(concepts) as Array<keyof typeof concepts>
 
   for (let i = 0; i < count; i++) {
     const position = random.nextArray(positions)
-    const scenario = random.nextArray(POSITION_SCENARIOS)
-    const concept = random.nextArray(POSITION_CONCEPTS[position])
+    const scenario = random.nextArray(scenarios)
+    const concept = random.nextArray(concepts[position])
 
     const questionTypes = ['identify', 'opposite', 'location']
     const qType = random.nextArray(questionTypes)
@@ -829,26 +1009,30 @@ export function* generatePositionExercises(
     let wrongAnswers: string[]
 
     if (qType === 'identify') {
-      question = `If the ${scenario.subject} is ${concept} the ${scenario.location}, where is the ${scenario.subject}?`
-      correctAnswer = POSITION_LABELS[position]
-      wrongAnswers = positions.filter(p => p !== position).map(p => POSITION_LABELS[p])
+      question = tr(
+        locale,
+        `If the ${scenario.subject} is ${concept} the ${scenario.location}, where is the ${scenario.subject}?`,
+        `如果${scenario.subject}在${scenario.location}${concept}，${scenario.subject}在哪裏？`
+      )
+      correctAnswer = labels[position]
+      wrongAnswers = positions.filter(p => p !== position).map(p => labels[p])
     } else if (qType === 'opposite') {
-      const oppositesMap: Record<string, string> = {
-        over: 'under',
-        under: 'over',
-        left: 'right',
-        right: 'left',
-        inFront: 'behind',
-        behind: 'in front'
+      const oppositesMap: Record<Locale, Record<string, string>> = {
+        en: { over: 'under', under: 'over', left: 'right', right: 'left', inFront: 'behind', behind: 'in front' },
+        'zh-Hant': { over: '下面', under: '上面', left: '右邊', right: '左邊', inFront: '後面', behind: '前面' },
       }
-      question = `Opposite of ${concept} is ____`
-      correctAnswer = oppositesMap[position]
-      const wrongPool = Object.values(POSITION_LABELS).filter(l => l !== correctAnswer)
+      question = tr(locale, `Opposite of ${concept} is ____`, `「${concept}」的相反是 ____`)
+      correctAnswer = oppositesMap[locale][position]
+      const wrongPool = Object.values(labels).filter(l => l !== correctAnswer)
       wrongAnswers = random.nextSubset(wrongPool, 3)
     } else {
-      question = `The ${scenario.subject} is flying ${concept} the ${scenario.location}`
-      correctAnswer = POSITION_LABELS[position]
-      wrongAnswers = positions.filter(p => p !== position).map(p => POSITION_LABELS[p])
+      question = tr(
+        locale,
+        `The ${scenario.subject} is flying ${concept} the ${scenario.location}`,
+        `${scenario.subject}在${scenario.location}${concept}飛`
+      )
+      correctAnswer = labels[position]
+      wrongAnswers = positions.filter(p => p !== position).map(p => labels[p])
     }
 
     yield multipleChoice(
@@ -858,7 +1042,9 @@ export function* generatePositionExercises(
       correctAnswer,
       wrongAnswers,
       difficulty,
-      `Position: ${POSITION_LABELS[position]}`
+      tr(locale, `Position: ${labels[position]}`, `位置：${labels[position]}`),
+      undefined,
+      locale
     )
   }
 }

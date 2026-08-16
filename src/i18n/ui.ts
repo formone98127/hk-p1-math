@@ -34,6 +34,43 @@ type UiDict = {
   shorterLabel: string
   tensLabel: string
   onesLabel: string
+  practiceTitle: string
+  practiceSub: string
+  uniqueTotal: string
+  freshBadge: string
+  exercisesCount: string
+  variations: string
+  pts: string
+  timeMin: string
+  level: string
+  easyLabel: string
+  mediumLabel: string
+  hardLabel: string
+  mixSection: string
+  mixTitle: string
+  mixDesc: string
+  mixCount: string
+  exit: string
+  questionOf: string
+  streak: string
+  timeWarning: string
+  correctFeedback: string
+  wrongFeedback: string
+  nextIn: string
+  hintToggle: string
+  skip: string
+  loading: string
+  resultsTitle: string
+  resultsScore: string
+  resultsPoints: string
+  achievementsUnlocked: string
+  reviewAnswers: string
+  correctStatus: string
+  yourAnswer: string
+  skipped: string
+  correctIs: string
+  backToPractice: string
+  tryAgain: string
 }
 
 export const ui: Record<Locale, UiDict> = {
@@ -71,6 +108,43 @@ export const ui: Record<Locale, UiDict> = {
     shorterLabel: 'shorter',
     tensLabel: 'tens',
     onesLabel: 'ones',
+    practiceTitle: '🎯 Practice Zone',
+    practiceSub: 'Choose a unit to practice and earn achievements!',
+    uniqueTotal: '{n}+ unique questions — fresh every session',
+    freshBadge: '🔄 Fresh questions each time!',
+    exercisesCount: '{n} exercises',
+    variations: '🎲 ~{n} variations',
+    pts: '⭐ {n} pts',
+    timeMin: '⏱️ {n}m',
+    level: 'Level',
+    easyLabel: '🟢 Easy',
+    mediumLabel: '🟡 Medium',
+    hardLabel: '🔴 Hard',
+    mixSection: 'Mix Practice',
+    mixTitle: 'Mix Practice',
+    mixDesc: 'Test your skills with 20 random questions from every unit!',
+    mixCount: '20 random',
+    exit: '← Exit',
+    questionOf: 'Question {a} of {b}',
+    streak: '🔥 {n} streak',
+    timeWarning: '⚠️ Only {t} remaining!',
+    correctFeedback: '🎉 Correct! Great job!',
+    wrongFeedback: '❌ Not quite. Try again next time!',
+    nextIn: 'Next in {n}s...',
+    hintToggle: '💡 Need a hint?',
+    skip: 'Skip →',
+    loading: 'Loading exercises...',
+    resultsTitle: 'Practice Complete! 🎉',
+    resultsScore: '{a} / {b} correct ({p}%)',
+    resultsPoints: 'You earned {n} points!',
+    achievementsUnlocked: 'Achievements Unlocked!',
+    reviewAnswers: 'Review Answers',
+    correctStatus: '✓ Correct!',
+    yourAnswer: '✗ Your answer: {a}',
+    skipped: 'Skipped',
+    correctIs: 'Correct: {a}',
+    backToPractice: 'Back to Practice Zone',
+    tryAgain: 'Try Again',
   },
   'zh-Hant': {
     brand: '香港小一數學',
@@ -106,5 +180,42 @@ export const ui: Record<Locale, UiDict> = {
     shorterLabel: '較短',
     tensLabel: '個十',
     onesLabel: '個一',
+    practiceTitle: '🎯 練習區',
+    practiceSub: '選擇單元來練習，贏取獎章！',
+    uniqueTotal: '{n}+ 條不同題目——每次都是新的',
+    freshBadge: '🔄 每次都是新題目！',
+    exercisesCount: '{n} 題',
+    variations: '🎲 約 {n} 種變化',
+    pts: '⭐ {n} 分',
+    timeMin: '⏱️ {n} 分鐘',
+    level: '程度',
+    easyLabel: '🟢 簡單',
+    mediumLabel: '🟡 中等',
+    hardLabel: '🔴 困難',
+    mixSection: '混合練習',
+    mixTitle: '混合練習',
+    mixDesc: '從所有單元隨機抽出 20 題來挑戰自己！',
+    mixCount: '隨機 20 題',
+    exit: '← 離開',
+    questionOf: '第 {a} 題，共 {b} 題',
+    streak: '🔥 連對 {n} 題',
+    timeWarning: '⚠️ 只剩 {t}！',
+    correctFeedback: '🎉 答對了！真棒！',
+    wrongFeedback: '❌ 不對，再試一次！',
+    nextIn: '再過 {n} 秒...',
+    hintToggle: '💡 需要提示？',
+    skip: '跳過 →',
+    loading: '正在載入題目...',
+    resultsTitle: '練習完成！🎉',
+    resultsScore: '答對 {a} / {b} 題（{p}%）',
+    resultsPoints: '你獲得 {n} 分！',
+    achievementsUnlocked: '解鎖獎章！',
+    reviewAnswers: '檢討答案',
+    correctStatus: '✓ 答對了！',
+    yourAnswer: '✗ 你的答案：{a}',
+    skipped: '已跳過',
+    correctIs: '正確答案：{a}',
+    backToPractice: '返回練習區',
+    tryAgain: '再試一次',
   },
 }
