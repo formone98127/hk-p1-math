@@ -5,13 +5,6 @@ import { LangSwitch } from './LangSwitch'
 import { useI18n } from '../i18n/I18nProvider'
 import type { Strand } from '../data/types'
 
-const strandLabels: Record<Strand, string> = {
-  number: 'Number',
-  measures: 'Measures',
-  shape: 'Shape & Space',
-  inquiry: 'Inquiry',
-}
-
 const strandIcons: Record<Strand, string> = {
   number: '🔢',
   measures: '📏',
@@ -157,8 +150,8 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
                           {displayCount} {hasGenerator && '🔄'}
                         </span>
                       </div>
-                      <h3 className="hub-card-title">{set.title}</h3>
-                      <p className="hub-card-desc">{set.description}</p>
+                      <h3 className="hub-card-title">{cardTitle}</h3>
+                      <p className="hub-card-desc">{cardDesc}</p>
                       <div className="hub-card-meta">
                         <span className="hub-points">{displayPoints}</span>
                         {hasGenerator && capacity > 0 && (
