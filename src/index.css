@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,700;1,9..40,500&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,700;1,9..40,500&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap');
 
 :root {
   --bg: #0c1210;
@@ -10,7 +10,7 @@
   --b: #4cc9f0;
   --accent: #ffd166;
   --op: #b8f27c;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: 'DM Sans', 'Noto Sans TC', system-ui, sans-serif;
   color: var(--ink);
   background: var(--bg);
   line-height: 1.4;
