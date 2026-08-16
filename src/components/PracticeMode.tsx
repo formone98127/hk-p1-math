@@ -60,6 +60,7 @@ export function PracticeMode() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [wasCorrect, setWasCorrect] = useState(false)
   const [countdown, setCountdown] = useState(0)
+  const [encouragement, setEncouragement] = useState('')
 
   // Sound effects using Web Audio API
   const playCorrectSound = useCallback(() => {
@@ -188,8 +189,8 @@ export function PracticeMode() {
     setShowResults(false)
 
     if (setId === 'mix') {
-      // 20 random questions across all units at the chosen level
-      setExercises(generateNewQuickPractice(20, difficulty, undefined, locale === 'zh-Hant' ? 'zh-Hant' : 'en'))
+      // 10 random questions across all units at the chosen level
+      setExercises(generateNewQuickPractice(10, difficulty, undefined, locale === 'zh-Hant' ? 'zh-Hant' : 'en'))
       setTimeRemaining(null)
       return
     }
@@ -272,6 +273,7 @@ export function PracticeMode() {
   useEffect(() => {
     setShowFeedback(false)
     setWasCorrect(false)
+    setEncouragement('')
   }, [currentIndex])
 
   const currentExercise = exercises[currentIndex]
@@ -337,9 +339,15 @@ export function PracticeMode() {
         setCorrectCount((prev) => prev + 1)
         setStreak((prev) => prev + 1)
         playCorrectSound()
+
+        // Add encouraging message based on streak or random
+        const encouragements = [t.encouragement1, t.encouragement2, t.encouragement3, t.encouragement4, t.encouragement5]
+        const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)]
+        setEncouragement(randomEncouragement)
       } else {
         setStreak(0)
         playIncorrectSound()
+        setEncouragement('')
       }
 
       setShowFeedback(true)
@@ -406,6 +414,15 @@ export function PracticeMode() {
             </div>
           </section>
         )}
+
+        {/* Encouraging summary message for 6-year-olds */}
+        <div className="encouragement-summary">
+          {percentage === 100 && t.encouragement1}
+          {percentage >= 80 && percentage < 100 && t.encouragement2}
+          {percentage >= 60 && percentage < 80 && t.encouragement3}
+          {percentage >= 40 && percentage < 60 && t.encouragement4}
+          {percentage < 40 && t.encouragement5}
+        </div>
 
         <section className="review-section">
           <h3>{t.reviewAnswers}</h3>
@@ -522,7 +539,10 @@ export function PracticeMode() {
           {showFeedback && (
             <div className={`feedback-message ${wasCorrect ? 'correct' : 'incorrect'}`}>
               {wasCorrect ? (
-                <span>{t.correctFeedback}</span>
+                <div>
+                  <span>{t.correctFeedback}</span>
+                  {encouragement && <span className="encouragement-text">{encouragement}</span>}
+                </div>
               ) : (
                 <span>{t.wrongFeedback}</span>
               )}

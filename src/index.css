@@ -1138,12 +1138,32 @@ a.primary {
   background: rgba(184, 242, 124, 0.15);
   border: 1px solid rgba(184, 242, 124, 0.4);
   color: var(--op);
+  box-shadow: 0 4px 15px rgba(184, 242, 124, 0.3);
 }
 
 .feedback-message.incorrect {
   background: rgba(255, 107, 122, 0.15);
   border: 1px solid rgba(255, 107, 122, 0.4);
   color: #ff6b7a;
+}
+
+.encouragement-text {
+  font-size: 0.95rem;
+  color: #ffd166;
+  margin-top: 0.25rem;
+  font-weight: 700;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
 }
 
 .countdown {
@@ -1404,6 +1424,35 @@ a.primary {
   color: var(--muted);
   font-size: 0.85rem;
   margin-top: 0.25rem;
+}
+
+.encouragement-summary {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 1.5rem auto;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 209, 102, 0.1);
+  border: 2px solid var(--accent);
+  border-radius: 16px;
+  max-width: 500px;
+  animation: bounce-in 0.5s ease-out;
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .results-actions {
