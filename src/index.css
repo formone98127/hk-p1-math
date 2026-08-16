@@ -1018,6 +1018,49 @@ a.primary {
   color: #ff6b7a;
 }
 
+.practice-coins {
+  color: #ffd166;
+  font-weight: 700;
+  font-size: 1.1rem;
+  animation: coin-pulse 0.3s ease-out;
+}
+
+.practice-coins.coin-earned {
+  animation: coin-bounce 1s ease-out;
+  color: #ffed4e;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+}
+
+@keyframes coin-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes coin-bounce {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.3) translateY(-10px);
+  }
+  50% {
+    transform: scale(1.1) translateY(0);
+  }
+  75% {
+    transform: scale(1.2) translateY(-5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
 .time-warning {
   margin: 1rem auto;
   max-width: 600px;

@@ -9,6 +9,7 @@ import { LangSwitch } from './LangSwitch'
 
 // In-progress sessions are saved so a reload resumes where the kid left off
 const STORAGE_KEY = 'hk-p1-practice-session'
+const COINS_KEY = 'hk-p1-coins'
 
 type SavedSession = {
   setId: string
@@ -20,6 +21,23 @@ type SavedSession = {
   streak: number
   timeRemaining: number | null
   showResults: boolean
+}
+
+function loadCoins(): number {
+  try {
+    const raw = localStorage.getItem(COINS_KEY)
+    return raw ? parseInt(raw, 10) : 0
+  } catch {
+    return 0
+  }
+}
+
+function saveCoins(coins: number): void {
+  try {
+    localStorage.setItem(COINS_KEY, coins.toString())
+  } catch {
+    // Storage unavailable
+  }
 }
 
 function loadSession(): SavedSession | null {
@@ -61,6 +79,8 @@ export function PracticeMode() {
   const [wasCorrect, setWasCorrect] = useState(false)
   const [countdown, setCountdown] = useState(0)
   const [encouragement, setEncouragement] = useState('')
+  const [totalCoins, setTotalCoins] = useState(0)
+  const [showCoinAnimation, setShowCoinAnimation] = useState(false)
 
   // Sound effects using Web Audio API
   const playCorrectSound = useCallback(() => {
@@ -144,6 +164,11 @@ export function PracticeMode() {
     } catch (error) {
       console.log('Audio not supported')
     }
+  }, [])
+
+  // Load total coins on mount
+  useEffect(() => {
+    setTotalCoins(loadCoins())
   }, [])
 
   // Load exercises, restoring an in-progress session when one exists
@@ -348,10 +373,23 @@ export function PracticeMode() {
         setStreak((prev) => prev + 1)
         playCorrectSound()
 
+        // Award coins based on difficulty and streak
+        const baseCoins = currentExercise.difficulty === 'easy' ? 1 : currentExercise.difficulty === 'medium' ? 2 : 3
+        const streakBonus = streak >= 3 ? 1 : 0
+        const coinsEarned = baseCoins + streakBonus
+
+        setTotalCoins((prev) => {
+          const newTotal = prev + coinsEarned
+          saveCoins(newTotal)
+          return newTotal
+        })
+        setShowCoinAnimation(true)
+        setTimeout(() => setShowCoinAnimation(false), 1000)
+
         // Add encouraging message based on streak or random
         const encouragements = [t.encouragement1, t.encouragement2, t.encouragement3, t.encouragement4, t.encouragement5]
         const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)]
-        setEncouragement(randomEncouragement)
+        setEncouragement(randomEncouragement + ` +${coinsEarned} 🪙`)
       } else {
         setStreak(0)
         playIncorrectSound()
@@ -488,6 +526,9 @@ export function PracticeMode() {
           )}
           <span className="practice-streak">
             {t.streak.replace('{n}', streak.toString())}
+          </span>
+          <span className={`practice-coins ${showCoinAnimation ? 'coin-earned' : ''}`}>
+            🪙 {totalCoins}
           </span>
         </div>
       </header>
