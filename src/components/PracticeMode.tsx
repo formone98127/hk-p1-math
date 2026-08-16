@@ -4,6 +4,8 @@ import { allExerciseSets } from '../data/exercises'
 import { generateExerciseSetForUnit, generateQuickPractice as generateNewQuickPractice, getGeneratableUnitIds } from '../data/exerciseSetGenerators'
 import type { Difficulty, Exercise } from '../data/types'
 import { checkAchievements } from '../data/achievements'
+import { useI18n } from '../i18n/I18nProvider'
+import { LangSwitch } from './LangSwitch'
 
 // In-progress sessions are saved so a reload resumes where the kid left off
 const STORAGE_KEY = 'hk-p1-practice-session'
@@ -38,6 +40,7 @@ function clearSession(): void {
 }
 
 export function PracticeMode() {
+  const { t } = useI18n()
   const { setId } = useParams<{ setId?: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -354,7 +357,7 @@ export function PracticeMode() {
   if (!currentExercise && !showResults) {
     return (
       <div className="practice-loading">
-        <p>Loading exercises...</p>
+        <p>{t.loading}</p>
       </div>
     )
   }
@@ -380,16 +383,16 @@ export function PracticeMode() {
     return (
       <div className="practice-results">
         <header className="results-header">
-          <h2>Practice Complete! 🎉</h2>
+          <h2>{t.resultsTitle}</h2>
           <p className="results-score">
-            {correctCount} / {exercises.length} correct ({percentage}%)
+            {t.resultsScore.replace('{a}', correctCount.toString()).replace('{b}', exercises.length.toString()).replace('{p}', percentage.toString())}
           </p>
-          <p className="results-points">You earned {earnedPoints} points!</p>
+          <p className="results-points">{t.resultsPoints.replace('{n}', earnedPoints.toString())}</p>
         </header>
 
         {unlockedAchievements.length > 0 && (
           <section className="achievements-unlocked">
-            <h3>Achievements Unlocked!</h3>
+            <h3>{t.achievementsUnlocked}</h3>
             <div className="achievement-grid">
               {unlockedAchievements.map((ach) => (
                 <div key={ach.id} className="achievement-badge unlocked">
@@ -405,7 +408,7 @@ export function PracticeMode() {
         )}
 
         <section className="review-section">
-          <h3>Review Answers</h3>
+          <h3>{t.reviewAnswers}</h3>
           {exercises.map((ex, idx) => {
             const userAnswer = userAnswers[ex.id]
             const isCorrect = String(userAnswer) === String(ex.correctAnswer)
@@ -417,11 +420,11 @@ export function PracticeMode() {
                 </div>
                 <div className="review-a">
                   {isCorrect ? (
-                    <span className="review-status correct">✓ Correct!</span>
+                    <span className="review-status correct">{t.correctStatus}</span>
                   ) : (
                     <div className="review-incorrect">
-                      <span className="review-status incorrect">✗ Your answer: {userAnswer ?? 'Skipped'}</span>
-                      <span className="review-correct">Correct: {ex.correctAnswer}</span>
+                      <span className="review-status incorrect">{t.yourAnswer.replace('{a}', userAnswer?.toString() ?? t.skipped)}</span>
+                      <span className="review-correct">{t.correctIs.replace('{a}', ex.correctAnswer.toString())}</span>
                     </div>
                   )}
                 </div>
@@ -432,10 +435,10 @@ export function PracticeMode() {
 
         <div className="results-actions">
           <button className="btn-primary" onClick={() => { clearSession(); navigate('/practice') }}>
-            Back to Practice Zone
+            {t.backToPractice}
           </button>
           <button className="btn-secondary" onClick={() => { clearSession(); window.location.reload() }}>
-            Try Again
+            {t.tryAgain}
           </button>
         </div>
       </div>
@@ -446,11 +449,12 @@ export function PracticeMode() {
     <div className="practice-mode">
       <header className="practice-header">
         <Link to="/practice" className="back-link" onClick={clearSession}>
-          ← Exit
+          {t.exit}
         </Link>
+        <LangSwitch />
         <div className="practice-progress">
           <span>
-            Question {currentIndex + 1} of {exercises.length}
+            {t.questionOf.replace('{a}', (currentIndex + 1).toString()).replace('{b}', exercises.length.toString())}
           </span>
           {timeRemaining !== null && (
             <span className="practice-timer">
@@ -458,23 +462,23 @@ export function PracticeMode() {
             </span>
           )}
           <span className="practice-streak">
-            🔥 {streak} streak
+            {t.streak.replace('{n}', streak.toString())}
           </span>
         </div>
       </header>
 
       {timeRemaining !== null && timeRemaining <= 30 && (
         <div className="time-warning">
-          ⚠️ Only {formatTime(timeRemaining)} remaining!
+          {t.timeWarning.replace('{t}', formatTime(timeRemaining))}
         </div>
       )}
 
       <main className="practice-main">
         <div className="exercise-card">
           <div className="exercise-difficulty">
-            {currentExercise.difficulty === 'easy' && '🟢 Easy'}
-            {currentExercise.difficulty === 'medium' && '🟡 Medium'}
-            {currentExercise.difficulty === 'hard' && '🔴 Hard'}
+            {currentExercise.difficulty === 'easy' && t.easyLabel}
+            {currentExercise.difficulty === 'medium' && t.mediumLabel}
+            {currentExercise.difficulty === 'hard' && t.hardLabel}
           </div>
 
           <h2 className="exercise-question">{currentExercise.question}</h2>
@@ -518,11 +522,11 @@ export function PracticeMode() {
           {showFeedback && (
             <div className={`feedback-message ${wasCorrect ? 'correct' : 'incorrect'}`}>
               {wasCorrect ? (
-                <span>🎉 Correct! Great job!</span>
+                <span>{t.correctFeedback}</span>
               ) : (
-                <span>❌ Not quite. Try again next time!</span>
+                <span>{t.wrongFeedback}</span>
               )}
-              <span className="countdown">Next in {countdown}s...</span>
+              <span className="countdown">{t.nextIn.replace('{n}', countdown.toString())}</span>
             </div>
           )}
 
@@ -531,7 +535,7 @@ export function PracticeMode() {
               className="hint-toggle"
               onClick={() => document.querySelector('.hint-text')?.classList.toggle('visible')}
             >
-              💡 Need a hint?
+              {t.hintToggle}
             </button>
           )}
           {currentExercise.hint && !showFeedback && (
@@ -542,7 +546,7 @@ export function PracticeMode() {
         <div className="practice-actions">
           {!showFeedback && (
             <button className="btn-skip" onClick={handleSkip}>
-              Skip →
+              {t.skip}
             </button>
           )}
         </div>
