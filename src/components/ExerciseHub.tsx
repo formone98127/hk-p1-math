@@ -65,6 +65,43 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
         </p>
       </header>
 
+      {/* Mix Practice - Always First */}
+      <section className="hub-section">
+        <h2 className="hub-strand-title">
+          <span className="strand-icon">🎲</span>
+          Mix Practice
+        </h2>
+        <div className="hub-grid">
+          <div className="hub-card hub-card-featured hub-card-selectable">
+            <Link className="hub-card-main" to="/practice/mix">
+              <div className="hub-card-header">
+                <span className="hub-unit-code">MIX</span>
+                <span className="hub-exercise-count">20 random</span>
+              </div>
+              <h3 className="hub-card-title">Mix Practice</h3>
+              <p className="hub-card-desc">
+                Test your skills with 20 random questions from every unit!
+              </p>
+              <div className="hub-card-meta">
+                <span className="hub-points">⭐ Variable</span>
+              </div>
+            </Link>
+            <div className="hub-difficulty">
+              <span className="hub-difficulty-label">Level</span>
+              {(['easy', 'medium', 'hard'] as const).map((level) => (
+                <Link
+                  key={level}
+                  className="hub-difficulty-btn"
+                  to={`/practice/mix?difficulty=${level}`}
+                >
+                  {level === 'easy' ? '🟢 Easy' : level === 'medium' ? '🟡 Medium' : '🔴 Hard'}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {strandOrder.map((strand) => {
         const sets = byStrand[strand]
         if (!sets || sets.length === 0) return null
