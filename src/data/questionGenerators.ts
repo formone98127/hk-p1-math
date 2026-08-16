@@ -166,7 +166,7 @@ export function* generateAdditionExercises(
     const b = random.nextInt(1, Math.max(1, maxSum - a))
 
     const correct = a + b
-    const question = `${a} + ${b} = ?`
+    const question = tr(locale, `${a} + ${b} = ?`, `${a} + ${b} = ？`)
 
     yield multipleChoice(
       generateExerciseId(unitId, 'addition', seed, i),
@@ -211,7 +211,7 @@ export function* generateSubtractionExercises(
     const b = random.nextInt(1, Math.max(1, a - 1))
 
     const correct = a - b
-    const question = `${a} − ${b} = ?`
+    const question = tr(locale, `${a} − ${b} = ?`, `${a} − ${b} = ？`)
 
     yield multipleChoice(
       generateExerciseId(unitId, 'subtraction', seed, i),
@@ -244,7 +244,7 @@ export function* generateThreeAddendsExercises(
     yield multipleChoice(
       generateExerciseId(unitId, 'three-addends', seed, i),
       unitId,
-      `${a} + ${b} + ${c} = ?`,
+      tr(locale, `${a} + ${b} + ${c} = ?`, `${a} + ${b} + ${c} = ？`),
       String(correct),
       [String(correct + random.nextInt(1, 3)), String(Math.max(0, correct - random.nextInt(1, 2))), String(correct + random.nextInt(2, 4))],
       'hard',
