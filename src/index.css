@@ -756,6 +756,13 @@ a.primary {
   cursor: pointer;
 }
 
+.hub-header .lang-switch {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
 .hub-header h1 {
   margin: 0 0 0.5rem;
   font-family: 'Fraunces', Georgia, serif;
@@ -969,12 +976,19 @@ a.primary {
   align-items: center;
   padding: 1.5rem 1.25rem;
   border-bottom: 1px solid var(--line);
+  position: relative;
 }
 
 .practice-header .back-link {
   color: var(--muted);
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.practice-header .lang-switch {
+  position: absolute;
+  right: 1.25rem;
+  top: 1.5rem;
 }
 
 .practice-progress {
