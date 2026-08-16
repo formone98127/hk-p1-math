@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LangSwitch } from '../components/LangSwitch'
+import { ThemeSwitch } from '../components/ThemeSwitch'
 import { allUnitSeries, heroLessonId, strandOrder } from '../data/p1Catalog'
 import type { Strand } from '../data/types'
 import { useI18n } from '../i18n/I18nProvider'
@@ -139,6 +140,7 @@ export function Catalog() {
     <div className="catalog">
       <div className="catalog-top">
         <LangSwitch />
+        <ThemeSwitch />
       </div>
 
       <header className="catalog-hero">

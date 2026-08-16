@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { I18nProvider } from './i18n/I18nProvider'
+import { ThemeProvider } from './i18n/ThemeProvider'
 import { Catalog } from './pages/Catalog'
 import { LessonPage } from './pages/LessonPage'
 import { ExerciseHub } from './components/ExerciseHub'
@@ -12,16 +13,18 @@ const basename =
 
 export default function App() {
   return (
-    <I18nProvider>
-      <BrowserRouter basename={basename}>
-        <Routes>
-          <Route path="/" element={<Catalog />} />
-          <Route path="/lesson/:id" element={<LessonPage />} />
-          <Route path="/practice" element={<ExerciseHub onBack={() => window.history.back()} />} />
-          <Route path="/practice/:setId" element={<PracticeMode />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <BrowserRouter basename={basename}>
+          <Routes>
+            <Route path="/" element={<Catalog />} />
+            <Route path="/lesson/:id" element={<LessonPage />} />
+            <Route path="/practice" element={<ExerciseHub onBack={() => window.history.back()} />} />
+            <Route path="/practice/:setId" element={<PracticeMode />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </I18nProvider>
+    </ThemeProvider>
   )
 }

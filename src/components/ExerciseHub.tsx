@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { allExerciseSets } from '../data/exercises'
 import { getGeneratableUnitIds, getUnitGeneratorConfig, estimateUnitQuestionCapacity, getTotalQuestionCapacity } from '../data/exerciseSetGenerators'
 import { LangSwitch } from './LangSwitch'
+import { ThemeSwitch } from './ThemeSwitch'
 import { useI18n } from '../i18n/I18nProvider'
 import type { Strand } from '../data/types'
 
@@ -56,6 +57,7 @@ export function ExerciseHub({ onBack }: ExerciseHubProps) {
           ← {t.catalog}
         </button>
         <LangSwitch />
+        <ThemeSwitch />
         <h1>{t.practiceTitle}</h1>
         <p>{t.practiceSub}</p>
         <p className="hub-total">

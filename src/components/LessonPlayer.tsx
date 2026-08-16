@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { nextLessonId } from '../data/p1Catalog'
 import type { Lesson, NumberLabProps, WorldLabProps } from '../data/types'
 import { useI18n } from '../i18n/I18nProvider'
+import { LangSwitch } from './LangSwitch'
+import { ThemeSwitch } from './ThemeSwitch'
 import { NumberComposeLab } from './NumberComposeLab'
 import { WorldLab } from './WorldLab'
 
@@ -113,6 +115,8 @@ export function LessonPlayer({ lesson }: Props) {
         </Link>
         <div className="chrome-title">{lesson.title}</div>
         <div className="chrome-right">
+          <LangSwitch />
+          <ThemeSwitch />
           <div className="step-count">
             {done ? '✓' : `${i + 1}/${lesson.beats.length}`}
           </div>

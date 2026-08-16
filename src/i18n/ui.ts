@@ -76,6 +76,10 @@ type UiDict = {
   encouragement3: string
   encouragement4: string
   encouragement5: string
+  themeDark: string
+  themeLight: string
+  themeToDark: string
+  themeToLight: string
 }
 
 export const ui: Record<Locale, UiDict> = {
@@ -155,6 +159,10 @@ export const ui: Record<Locale, UiDict> = {
     encouragement3: 'You are getting smarter every day! 🚀',
     encouragement4: 'Amazing progress! You are awesome! 💫',
     encouragement5: 'Super job! Math is fun with you! 🎨',
+    themeDark: 'Dark',
+    themeLight: 'Light',
+    themeToDark: 'Switch to dark mode',
+    themeToLight: 'Switch to light mode',
   },
   'zh-Hant': {
     brand: '香港小一數學',
@@ -232,5 +240,9 @@ export const ui: Record<Locale, UiDict> = {
     encouragement3: '你越來越聰明了！🚀',
     encouragement4: '進步驚人！你太棒了！💫',
     encouragement5: '超棒！數學真好玩！🎨',
+    themeDark: '深色',
+    themeLight: '淺色',
+    themeToDark: '切換至深色模式',
+    themeToLight: '切換至淺色模式',
   },
 }
