@@ -250,6 +250,14 @@ export function PracticeMode() {
     return () => clearInterval(timer)
   }, [timeRemaining, showResults])
 
+  // Prevent body scrolling when in practice mode
+  useEffect(() => {
+    document.body.classList.add('practice-active')
+    return () => {
+      document.body.classList.remove('practice-active')
+    }
+  }, [])
+
   // Play achievement sound when results show with achievements
   useEffect(() => {
     if (showResults) {

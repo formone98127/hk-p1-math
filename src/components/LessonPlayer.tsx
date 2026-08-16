@@ -21,6 +21,14 @@ export function LessonPlayer({ lesson }: Props) {
   const gated = beat?.gate === 'interact' && !gateOk
   const nextId = nextLessonId(lesson.id)
 
+  // Prevent body scrolling when in lesson mode
+  useEffect(() => {
+    document.body.classList.add('lesson-active')
+    return () => {
+      document.body.classList.remove('lesson-active')
+    }
+  }, [])
+
   const go = useCallback(
     (delta: number) => {
       setI((cur) => {
